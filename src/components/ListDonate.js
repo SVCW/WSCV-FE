@@ -71,7 +71,7 @@ export default function ListDonate(props) {
               <div className="popup-head">
                 <h5>
                   
-                  Danh sách ủng hộdob cho chiến dịch
+                  Danh sách ủng hộ cho chiến dịch
                 </h5>
               </div>
             </div>

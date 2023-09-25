@@ -441,7 +441,7 @@ export default function ItemEndActivity(props) {
                         }}
                       >
                         <i className="icofont-sign-out" />
-                       Tắt chiến dịch
+                       Ngừng chiến dịch
                         <span>Ngừng chiến ngay lập tức</span>
                       </li>
                     ) : (
@@ -549,7 +549,7 @@ export default function ItemEndActivity(props) {
                         }}
                       >
                         <i className="icofont-money-bag" />
-                        Danh sách donate
+                        Danh sách người ủng hộ
                         <span>Danh sách đã donate cho chiến dịch</span>
                       </li>
                     ) : (
