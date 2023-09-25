@@ -394,8 +394,8 @@ export default function CreateActivity() {
         };
       });
       console.log(text)
-      // const action1 = await CreateProcessAction(text, handleClick1);
-      // dispatch(action1);
+      const action1 = await CreateProcessAction(text, handleClick1);
+      dispatch(action1);
       setInputFields([
         {
           processTitle: "",
