@@ -158,50 +158,60 @@ const Calender = (props) => {
     }
   };
 
+  if (showPopup) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = 'unset';
+
+  }
+
   const closePopup = () => {
     setShowPopup(false);
   };
 
   return (
-    <div>
+    <>
       <Calendar
-        className=""
         onChange={setDate}
         value={date}
         tileContent={tileContent}
         onClickDay={handleDayClick}
       />
       {showPopup && (
-        <div className="" style={{ position:'relative', zIndex:999 }}>
-        <div className="popup" style={{position:'fixed', padding: "20px 0",zIndex:999 }}>
-          <div>
-            <span
-              onClick={closePopup}
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "5px",
-                color: "#088dcd",
-                fontSize: "20px",
-                border: "1px solid #088dcd",
-                padding: "0px 13px 4px",
-                borderRadius: "50%",
-                cursor: "pointer",
-              }}
+        <div style={{ position:'relative', zIndex:999 }}>
+          <div className="popup" style={{position:'fixed', padding: "20px 0",zIndex:999 }}>
+            <div>
+              <span
+                onClick={closePopup}
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  top: "5px",
+                  color: "#088dcd",
+                  fontSize: "20px",
+                  border: "1px solid #088dcd",
+                  padding: "0px 13px 4px",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                }}
+              >
+                x
+              </span>
+            </div>
+            <div
+              style={{ textAlign: "center", fontSize: "20px", fontWeight: 800 }}
             >
-              x
-            </span>
+              Chiến dịch trong ngày {moment(days).format("DD/MM/YYYY")}
+            </div>
+            <div style={{ paddingTop: "30px" }}>{popupContent}</div>
           </div>
-          <div
-            style={{ textAlign: "center", fontSize: "20px", fontWeight: 800 }}
-          >
-            Chiến dịch trong ngày {moment(days).format("DD/MM/YYYY")}
-          </div>
-          <div style={{ paddingTop: "30px" }}>{popupContent}</div>
         </div>
-      </div>
       )}
-    </div>
+      {showPopup && (
+        <div style={{ position:'fixed', top: "0", left: '0', zIndex:998, width: "100vw", height: '100vh', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+        </div>
+      )}
+    </>
   );
 };
 

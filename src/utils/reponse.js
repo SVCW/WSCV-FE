@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 export const http = axios.create({
-  baseURL: 'https://svcw-system.azurewebsites.net/api',
+  baseURL: 'https://localhost:7083/api',
   // https://svcw-system.azurewebsites.net/api
   // timeout: 3000
   // https://localhost:7083/api

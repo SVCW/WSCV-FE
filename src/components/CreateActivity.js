@@ -56,10 +56,14 @@ export default function CreateActivity() {
     formik.setFieldValue("isFanpageAvtivity", isTextInputVisible1);
   };
   const fn = async (value) => {
+   try{
     const result = await geocodeByAddress(value);
     const lnglat = await getLatLng(result[0]);
 
     setCoords(lnglat);
+   } catch (e) {
+    
+   }
   };
   const handleImageChange = async (e) => {
     setIsLoading(true);
@@ -1085,11 +1089,14 @@ export default function CreateActivity() {
                                 name="location"
                                 value={data.location}
                                 onChange={(event) =>
-                                  handleInputChange(
-                                    index,
-                                    "location",
-                                    event.target.value
-                                  )
+                                  {
+                                    handleInputChange(
+                                      index,
+                                      "location",
+                                      event.target.value
+                                    );
+                                    fn(event.target.value)
+                                  }
                                 }
                                 id="name"
                                 className="form-control"
@@ -1098,6 +1105,32 @@ export default function CreateActivity() {
                             </div>
                           </div>
                         </div>
+                        <div className="row">
+                        <div className="col-md-12">
+                      {data?.location && data?.location !== "online" && <div style={{ height: "200px", width: "100%" }}>         
+                        <GoogleMapReact
+                            bootstrapURLKeys={{
+                              key: "AIzaSyBEg-cDilr_ZSqVWMdXNVm4Wn9mo-KOKOI",
+                            }}
+                            defaultCenter={coords}
+                            center={coords}
+                            defaultZoom={11}
+                          >
+                            <AnyReactComponent
+                              lat={coords.lat}
+                              lng={coords.lng}
+                              text={
+                                <i
+                                  class="icofont-location-pin"
+                                  style={{ fontSize: "3rem", color: "red" }}
+                                ></i>
+                              }
+                            />
+                          </GoogleMapReact>
+                    </div>} 
+                  </div>
+                        </div>
+                        
                         <div className="row">
                           <div className="col-md-6">
                             {data.processTypeId === "pt002" ? (
