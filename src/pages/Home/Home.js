@@ -48,8 +48,8 @@ export default function Home (props) {
         dispatch(action3)
         // const action = GetUserByIdAction(localStorage.getItem('userID'));
         // dispatch(action);
-        const action1 = GetProfileByIdAction(userID);
-        dispatch(action1)
+        // const action1 = GetProfileByIdAction(userID);
+        // dispatch(action1)
         const action2 = GetListFanpageAction();
         dispatch(action2)
         const action4 = GetListReportAction();

@@ -54,7 +54,7 @@ export default function ResultActivity (props) {
     return (
       <Button
         label="Tải xuống"
-        icon="pi pi-upload"
+        icon="pi pi-download"
         style={{ marginRight: "50px", background: "#088dcd", border: "none" }}
         className="p-button-help"
         onClick={exportCSV}
@@ -65,7 +65,7 @@ export default function ResultActivity (props) {
     return (
       <Button
         label="Tải xuống"
-        icon="pi pi-upload"
+        icon="pi pi-download"
         style={{ marginRight: "50px", background: "#088dcd", border: "none" }}
         className="p-button-help"
         onClick={exportCSV}

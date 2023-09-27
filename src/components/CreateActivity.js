@@ -13,6 +13,7 @@ import moment from "moment";
 import { GetListProcessTypeAction } from "../redux/actions/ProcessTypeAction";
 import { CreateProcessAction } from "../redux/actions/ProcessAction";
 import * as Yup from "yup";
+import { GetProfileByIdAction } from "../redux/actions/ProfileAction";
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
 export default function CreateActivity() {
   const dispatch = useDispatch();
@@ -56,14 +57,12 @@ export default function CreateActivity() {
     formik.setFieldValue("isFanpageAvtivity", isTextInputVisible1);
   };
   const fn = async (value) => {
-   try{
-    const result = await geocodeByAddress(value);
-    const lnglat = await getLatLng(result[0]);
+    try {
+      const result = await geocodeByAddress(value);
+      const lnglat = await getLatLng(result[0]);
 
-    setCoords(lnglat);
-   } catch (e) {
-    
-   }
+      setCoords(lnglat);
+    } catch (e) {}
   };
   const handleImageChange = async (e) => {
     setIsLoading(true);
@@ -141,6 +140,7 @@ export default function CreateActivity() {
     enableReinitialize: true,
     validationSchema,
     onSubmit: async (value) => {
+      console.log(value)
       const action = await CreateActivityAction(value, setCreate);
       await dispatch(action);
       formik.setFieldValue("title", "");
@@ -152,7 +152,6 @@ export default function CreateActivity() {
       formik.setFieldValue("endactivity", "");
       formik.setFieldValue("isFanpageAvtivity", false);
       formik.setFieldValue("media", []);
-
       Swal.fire({
         title: "Thành công",
         text: "Chiến dịch của bạn đã được ghi nhận. Vui lòng chờ được kiểm duyệt bởi hệ thống SVCW nhé!",
@@ -161,6 +160,7 @@ export default function CreateActivity() {
         confirmButtonColor: "#3085d6",
         confirmButtonText: "Hoàn thành",
       });
+
       setIsOpen((prevIsOpen) => !prevIsOpen);
       setIsDisplay(false);
     },
@@ -194,7 +194,7 @@ export default function CreateActivity() {
     },
   ]);
   const [tit, setTit] = useState("");
-  console.log(tit)
+  console.log(tit);
   const addInputField = () => {
     if (error === "1") {
       setInputFields([
@@ -362,7 +362,7 @@ export default function CreateActivity() {
     } else if (updatedInputFields[index].processTitle === "") {
       setTit("Vui lònng không bỏ trống");
     } else {
-       setTit("");
+      setTit("");
       setError("1");
     }
 
@@ -393,30 +393,9 @@ export default function CreateActivity() {
           media: item.media,
         };
       });
-      console.log(text)
+      console.log(text);
       const action1 = await CreateProcessAction(text, handleClick1);
       dispatch(action1);
-      setInputFields([
-        {
-          processTitle: "",
-          description: "",
-          startDate: "",
-          endDate: "",
-          activityId: create,
-          processTypeId: "",
-          isKeyProcess: true,
-          processNo: 0,
-          location: "online",
-          targetParticipant: 0,
-          realParticipant: 0,
-          isDonateProcess: false,
-          isParticipant: false,
-          realDonation: 0,
-          targetDonation: 0,
-          meida: [],
-          media: [],
-        },
-      ]);
     } else {
       Swal.fire({
         title: "Cảnh báo",
@@ -441,6 +420,28 @@ export default function CreateActivity() {
     formik.setFieldValue("endactivity", "");
     formik.setFieldValue("isFanpageAvtivity", false);
     formik.setFieldValue("media", []);
+
+    setInputFields([
+      {
+        processTitle: "",
+        description: "",
+        startDate: "",
+        endDate: "",
+        activityId: create,
+        processTypeId: "",
+        isKeyProcess: true,
+        processNo: 0,
+        location: "online",
+        targetParticipant: 0,
+        realParticipant: 0,
+        isDonateProcess: false,
+        isParticipant: false,
+        realDonation: 0,
+        targetDonation: 0,
+        meida: [],
+        media: [],
+      },
+    ]);
   };
   const handleClick1 = () => {
     setIsOpen1((prevIsOpen) => !prevIsOpen);
@@ -487,12 +488,12 @@ export default function CreateActivity() {
   };
 
   useEffect(() => {
-    const user = localStorage.getItem("userID");
-    if (user) {
-      const action = GetUserByIdAction(user);
-      dispatch(action);
-    }
-  }, [create]);
+    // const user = localStorage.getItem("userID");
+    // if (user) {
+    //   const action = GetProfileByIdAction(user);
+    //   dispatch(action);
+    // }
+  }, []);
   return (
     <div>
       {isValidCreate === "true" ? (
@@ -960,7 +961,10 @@ export default function CreateActivity() {
                                 placeholder="Tên hoạt động"
                                 required
                               />
-                              <div> {tit ==="" ? <Fragment></Fragment>: tit}</div>
+                              <div>
+                                {" "}
+                                {tit === "" ? <Fragment></Fragment> : tit}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1088,16 +1092,14 @@ export default function CreateActivity() {
                                 type="text"
                                 name="location"
                                 value={data.location}
-                                onChange={(event) =>
-                                  {
-                                    handleInputChange(
-                                      index,
-                                      "location",
-                                      event.target.value
-                                    );
-                                    fn(event.target.value)
-                                  }
-                                }
+                                onChange={(event) => {
+                                  handleInputChange(
+                                    index,
+                                    "location",
+                                    event.target.value
+                                  );
+                                  fn(event.target.value);
+                                }}
                                 id="name"
                                 className="form-control"
                                 required
@@ -1106,31 +1108,36 @@ export default function CreateActivity() {
                           </div>
                         </div>
                         <div className="row">
-                        <div className="col-md-12">
-                      {data?.location && data?.location !== "online" && <div style={{ height: "200px", width: "100%" }}>         
-                        <GoogleMapReact
-                            bootstrapURLKeys={{
-                              key: "AIzaSyBEg-cDilr_ZSqVWMdXNVm4Wn9mo-KOKOI",
-                            }}
-                            defaultCenter={coords}
-                            center={coords}
-                            defaultZoom={11}
-                          >
-                            <AnyReactComponent
-                              lat={coords.lat}
-                              lng={coords.lng}
-                              text={
-                                <i
-                                  class="icofont-location-pin"
-                                  style={{ fontSize: "3rem", color: "red" }}
-                                ></i>
-                              }
-                            />
-                          </GoogleMapReact>
-                    </div>} 
-                  </div>
+                          <div className="col-md-12">
+                            {data?.location && data?.location !== "online" && (
+                              <div style={{ height: "200px", width: "100%" }}>
+                                <GoogleMapReact
+                                  bootstrapURLKeys={{
+                                    key: "AIzaSyBEg-cDilr_ZSqVWMdXNVm4Wn9mo-KOKOI",
+                                  }}
+                                  defaultCenter={coords}
+                                  center={coords}
+                                  defaultZoom={11}
+                                >
+                                  <AnyReactComponent
+                                    lat={coords.lat}
+                                    lng={coords.lng}
+                                    text={
+                                      <i
+                                        class="icofont-location-pin"
+                                        style={{
+                                          fontSize: "3rem",
+                                          color: "red",
+                                        }}
+                                      ></i>
+                                    }
+                                  />
+                                </GoogleMapReact>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        
+
                         <div className="row">
                           <div className="col-md-6">
                             {data.processTypeId === "pt002" ? (
@@ -1142,13 +1149,16 @@ export default function CreateActivity() {
                                   type=""
                                   min={0}
                                   name="targetParticipant"
-                                  value={formatNumberWithCommas(data.targetParticipant)}
-                                  
+                                  value={formatNumberWithCommas(
+                                    data.targetParticipant
+                                  )}
                                   onChange={(event) =>
                                     handleInputChange(
                                       index,
                                       "targetParticipant",
-                                      Number(event.target.value.replace(/\D/, ""))
+                                      Number(
+                                        event.target.value.replace(/\D/, "")
+                                      )
                                     )
                                   }
                                   id="name"
@@ -1165,10 +1175,15 @@ export default function CreateActivity() {
                                   type=""
                                   min={0}
                                   name="targetDonation"
-                                  value={formatNumberWithCommas(data.targetDonation)}
+                                  value={formatNumberWithCommas(
+                                    data.targetDonation
+                                  )}
                                   onChange={(event) => {
+                                    const inputValue =
+                                      event.target.value.replace(/\D/g, ""); // Chỉ giữ lại ký tự số
+
                                     if (
-                                      Number(event.target.value) >
+                                      Number(inputValue) >
                                       Number(localStorage.getItem("maxDonate"))
                                     ) {
                                       Swal.fire({
@@ -1185,11 +1200,10 @@ export default function CreateActivity() {
                                       setError("2");
                                     } else {
                                       handleInputChange(
-                                      index,
-                                      "targetDonation",
-                                      Number(event.target.value.replace(/\D/, ""))
-                                    )
-                                    
+                                        index,
+                                        "targetDonation",
+                                        Number(inputValue)
+                                      );
                                       setError("1");
                                     }
                                   }}

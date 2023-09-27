@@ -1,5 +1,5 @@
-let ad = 'no';
-if (localStorage.getItem('admin') !== 'no') {
+let ad = '';
+if (localStorage.getItem('admin')) {
     ad = localStorage.getItem('admin')
 }
 

@@ -338,7 +338,7 @@ export default function Report () {
     return (
       <Button
         label="Tải xuống"
-        icon="pi pi-upload"
+        icon="pi pi-download"
         style={{ marginRight: "50px" }}
         className="p-button-help"
         onClick={exportCSV}

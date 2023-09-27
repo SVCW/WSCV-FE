@@ -384,7 +384,7 @@ export default function ItemActivity(props) {
                 style={{ height: "40px", width: "40px" }}
                 alt
                 src={
-                  getUserId.image === "none"
+                  getUserId?.image === "none"
                     ? "../images/avatar.jpg"
                     : getUserId.image
                 }

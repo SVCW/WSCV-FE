@@ -25,7 +25,7 @@ export const AdminTemplate = (props) => {
     <Route
       {...restProps}
       render={(propsRoute) => {
-        if (localStorage.getItem("admin") !== "no") {
+        if (localStorage.getItem("admin")  ) {
           return (
             <Fragment>
               <div className="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
@@ -89,7 +89,8 @@ export const AdminTemplate = (props) => {
                                 Xin chào! {localStorage.getItem("admin")}{" "}
                               </h6>
                               <div
-                                className="btn-shadow p-1 btn  btn-sm  btn btn-secondary dropdown-toggle" style={{background:'#3f6ad8'}}
+                                className="btn-shadow p-1 btn  btn-sm  btn btn-secondary dropdown-toggle"
+                                style={{ background: "#3f6ad8" }}
                                 onClick={() => {
                                   handleDropdownClick();
                                 }}
@@ -142,12 +143,10 @@ export const AdminTemplate = (props) => {
                                     onClick={() => {
                                       const action = {
                                         type: "LOGOUT_ADMIN",
-                                        admin: localStorage.setItem(
-                                          "admin",
-                                          "no"
-                                        ),
+                                       
                                       };
                                       dispatch(action);
+                                      localStorage.removeItem('admin');
                                     }}
                                   >
                                     Đăng xuất
@@ -204,23 +203,24 @@ export const AdminTemplate = (props) => {
                               </li>
                             </Fragment>
                           )}
-                          {localStorage.getItem("admin") !== "admin" ? (
-                            <Fragment></Fragment>
-                          ) : (
-                            <Fragment>
-                              <li className="app-sidebar__heading">Báo cáo</li>
-                              <li>
+
+                          <li className="app-sidebar__heading">Báo cáo</li>
+                          <li>
+                            {localStorage.getItem("admin") !== "admin" ? (
+                              <Fragment></Fragment>
+                            ) : (
+                              <Fragment>
                                 <NavLink to="/reporttype">
                                   <i className="metismenu-icon pe-7s-attention"></i>
                                   Loại báo cáo
                                 </NavLink>
-                                <NavLink to="/report">
-                                  <i className="metismenu-icon pe-7s-close-circle"></i>
-                                  Báo cáo
-                                </NavLink>
-                              </li>
-                            </Fragment>
-                          )}
+                              </Fragment>
+                            )}
+                            <NavLink to="/report">
+                              <i className="metismenu-icon pe-7s-close-circle"></i>
+                              Báo cáo
+                            </NavLink>
+                          </li>
 
                           {/* <li className="app-sidebar__heading">Vai trò</li>
                           <li>

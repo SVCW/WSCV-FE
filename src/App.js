@@ -35,6 +35,7 @@ import StatisticalUser1 from './pages/StatisticalUser/StatisticalUser1';
 import AdminStatistical1 from './pages/AdminStatistical/AdminStatistical1';
 import Detail from './Detail';
 import Search from './pages/Search/Search';
+import Profile1 from './pages/Profile/Profile1';
 export const history = createBrowserHistory()
 
 function App () {
@@ -54,6 +55,7 @@ function App () {
         <AdminTemplate exact path="/volunteer" Component={Volunteer} />
         <AdminTemplate exact path="/profilemoderator/:id" Component={ProfileModerator} />
         <UserTemplate path="/profile/:id" exact Component={Profile} />
+        <UserTemplate path="/profile1/:id" exact Component={Profile1} />
         <UserTemplate path="/home" exact Component={Home} />
         <UserTemplate exact path="/fanpage/:id" Component={DetailFanpage} />
         <UserTemplate exact path="/message/:id" Component={Message} />

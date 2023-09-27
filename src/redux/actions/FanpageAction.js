@@ -29,6 +29,22 @@ export const CreateFanpageAction = (value, props) => {
             const action = GetListFanpageAction()
             dispatch(action)
             localStorage.setItem('isFanpage', true)
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener("mouseenter", Swal.stopTimer);
+                  toast.addEventListener("mouseleave", Swal.resumeTimer);
+                },
+              });
+        
+              Toast.fire({
+                icon: "success",
+                title: `Gửi yêu cầu tạo tổ chức thành công. Chờ admin kiểm duyệt nhé!!!`,
+              });
             props.history.push('/home')
         } catch (error) {
             console.log(error);
@@ -140,7 +156,7 @@ export const UpdateFanpageAction = (value,id) => {
         
               Toast.fire({
                 icon: "success",
-                title: `Chỉnh sửa thành công tin thông tin Fanpage của bạn`,
+                title: `Chỉnh sửa thành công thông tin r của bạn`,
               });
         } catch (error) {
             console.log(error);
