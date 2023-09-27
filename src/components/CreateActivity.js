@@ -248,7 +248,12 @@ export default function CreateActivity() {
       updatedInputFields[index].targetParticipant = 0;
       updatedInputFields[index].isDonateProcess = true;
       updatedInputFields[index].isParticipant = false;
-    } else if (
+    }
+    else if (updatedInputFields[index].processTypeId !== "pt001") {
+      updatedInputFields[index].targetDonation = 0;
+      updatedInputFields[index].isDonateProcess = false;
+    }
+    else if (
       moment(localStorage.getItem("startactivity")).isAfter(
         updatedInputFields[index].startDate
       )
