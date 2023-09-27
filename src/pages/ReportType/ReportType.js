@@ -213,7 +213,7 @@ export default function ReportType () {
   };
 
   const rightToolbarTemplate = () => {
-    return <Button label="Tải xuống" icon="pi pi-upload" style={{ marginRight: '50px' }} className="p-button-help" onClick={exportCSV} />;
+    return <Button label="Tải xuống" icon="pi pi-download" style={{ marginRight: '50px' }} className="p-button-help" onClick={exportCSV} />;
   };
 
   const imageBodyTemplate = (rowData) => {

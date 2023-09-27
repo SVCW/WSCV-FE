@@ -1,7 +1,7 @@
 import { http } from "../../utils/reponse";
 import { GetActivityIDAction, GetListActivityAction, GetListEndActivityAction, GetListEndActivityByUserIDAction } from "./ActivityAction";
 import { GetFanpageByIDAction } from "./FanpageAction";
-import { GetProfileByIdAction } from "./ProfileAction";
+import { GetProfile1ByIdAction, GetProfileByIdAction } from "./ProfileAction";
 
 export const CommentAction = (value) => {
     return async (dispatch) => {
@@ -19,6 +19,8 @@ export const CommentAction = (value) => {
             dispatch(action5)
             const action8 = GetListEndActivityByUserIDAction(value.userId);
             dispatch(action8)
+            const action6 = GetProfile1ByIdAction(localStorage.getItem('useridprofile1'));
+            dispatch(action6)
         } catch (error) {
             console.log(error);
         }
@@ -53,6 +55,8 @@ export const CommentRepllyAction = (value) => {
             dispatch(action5)
             const action8 = GetListEndActivityByUserIDAction(value.userId);
             dispatch(action8)
+            const action6 = GetProfile1ByIdAction(localStorage.getItem('useridprofile1'));
+            dispatch(action6)
         } catch (error) {
             console.log(error);
         }

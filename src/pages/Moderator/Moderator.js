@@ -33,6 +33,7 @@ import {
 export default function Moderator () {
   const dispatch = useDispatch();
   const { arrModerator, msg } = useSelector((root) => root.ModeratorReducer);
+  console.log(msg)
 console.log(arrModerator)
   const [showInput, setShowInput] = useState(true);
   const [id, setID] = useState("abc");
@@ -259,7 +260,14 @@ console.log(arrModerator)
           label="Thêm mới"
           icon="pi pi-plus"
           severity="success"
-          onClick={openNew}
+          onClick={()=>{
+            openNew()
+            const action1 = {
+              type: "CHECK_MODERATOR",
+              msg: ''
+          }
+          dispatch(action1)
+          }}
         />
         {/* <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} /> */}
       </div>
@@ -270,7 +278,7 @@ console.log(arrModerator)
     return (
       <Button
         label="Tải xuống"
-        icon="pi pi-upload"
+        icon="pi pi-download"
         style={{ marginRight: "50px" }}
         className="p-button-help"
         onClick={exportCSV}
@@ -584,7 +592,7 @@ console.log(arrModerator)
               Số điện thoại
             </label>
             <InputText
-              type="number"
+              type=""
               id="phone"
               value={product.phone}
               onChange={(e) => onInputChange(e, "phone")}
@@ -605,14 +613,15 @@ console.log(arrModerator)
               id="dateOfBirth"
               value={product.dateOfBirth}
               onChange={(e) => onInputChange(e, "dateOfBirth")}
+              max={ new Date().toISOString().split("T")[0]}
               required
             />
             {/* {submitted && !product.description && <small className="p-error">Miêu tả huy hiệu không được để trống.</small>} */}
           </div>
 
-          <h4 style={{ color: "red" }}>
-            {localStorage.getItem("createmoderator")}
-          </h4>
+          <div style={{ color: "red" }}>
+            {msg === undefined ? "Vui lòng nhập đầy tất cả thông tin phía trên" :localStorage.getItem("createmoderator") }
+          </div>
         </Dialog>
 
         <Dialog

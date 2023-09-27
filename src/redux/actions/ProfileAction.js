@@ -6,7 +6,7 @@ export const GetProfileByIdAction = (id) => {
   return async (dispatch) => {
     try {
       let result = await http.get(`/User/get-user-by-id?UserId=${id}`);
-console.log(result.data.data.user.userId)
+      console.log(result.data.data.user.userId);
       const action = {
         type: "GET_USER_BY_ID",
         getUserId: result.data.data.user,
@@ -16,12 +16,33 @@ console.log(result.data.data.user.userId)
         "getuserid",
         JSON.stringify(result.data?.data?.user)
       );
-      localStorage.setItem(
-        "useridprofile",
-        result.data?.data?.user.userId
-      );
+      localStorage.setItem("useridprofile", result.data?.data?.user.userId);
       localStorage.setItem(
         "arrActivityUser",
+        JSON.stringify(result.data.data?.user?.activity)
+      );
+      dispatch(action);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+export const GetProfile1ByIdAction = (id) => {
+  return async (dispatch) => {
+    try {
+      let result = await http.get(`/User/get-user-by-id?UserId=${id}`);
+      const action = {
+        type: "GET_USER_BY_ID_1",
+        getUserId1: result.data.data.user,
+        arrActivityUser1: result.data.data?.user?.activity,
+      };
+      localStorage.setItem(
+        "getuserid1",
+        JSON.stringify(result.data?.data?.user)
+      );
+      localStorage.setItem("useridprofile1", result.data?.data?.user.userId);
+      localStorage.setItem(
+        "arrActivityUser1",
         JSON.stringify(result.data.data?.user?.activity)
       );
       dispatch(action);

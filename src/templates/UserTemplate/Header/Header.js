@@ -25,8 +25,8 @@ export default function Header(props) {
   };
 
   useEffect(() => {
-    // const action = GetProfileByIdAction(userID);
-    // dispatch(action);
+    const action = GetProfileByIdAction(userID);
+    dispatch(action);
   }, [userID]);
   const formik = useFormik({
     initialValues: {

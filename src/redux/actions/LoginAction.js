@@ -115,6 +115,22 @@ export const LoginModeratorAction = (value, props) => {
       localStorage.setItem("moderator", JSON.stringify(result.data.data));
 
       props.history.push("/adminstatistical");
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
+      Toast.fire({
+        icon: "success",
+        title: `Đăng nhập thành công`,
+      });
     } catch (error) {
       const action = {
         type: "CHECK_MODERATOR",

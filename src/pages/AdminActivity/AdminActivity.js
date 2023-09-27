@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import moment from "moment";
 import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
@@ -134,6 +134,7 @@ export default function AdminActivity() {
     const arr = arrActivity.filter((item) => item.status === op);
     setProducts(arr);
   }, [arrActivity, op]);
+  console.log(products);
 
   // const formatCurrency = (value) => {
   //     return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
@@ -331,7 +332,7 @@ export default function AdminActivity() {
     return (
       <Button
         label="Tải xuống"
-        icon="pi pi-upload"
+        icon="pi pi-download"
         style={{ marginRight: "50px" }}
         className="p-button-help"
         onClick={exportCSV}
@@ -404,7 +405,7 @@ export default function AdminActivity() {
             editProduct(rowData);
           }}
         /> */}
-        {op === "InActive" || op === "Quit" || op ==="Pending"? (
+        {op === "InActive" || op === "Quit" || op === "Pending" ? (
           <div></div>
         ) : (
           <Button
@@ -579,7 +580,7 @@ export default function AdminActivity() {
               field="description"
               header="Mô tả"
               sortable
-              style={{ minWidth: "12rem" }}
+              style={{ minWidth: "7rem" }}
               body={(rowData) => {
                 const maxLength = 150;
                 const description = rowData.description;
@@ -595,6 +596,20 @@ export default function AdminActivity() {
                 return description;
               }}
             ></Column>
+            {op === "Reject" ? (
+              <Column
+                field="rejectActivity[0]?.reason"
+                header="Lý do"
+                sortable
+                style={{ minWidth: "12rem" }}
+                body={(rowData) => {
+                  const reason = rowData.rejectActivity[0]?.reason;
+                  return reason;
+                }}
+              ></Column>
+            ) : (
+              <Fragment></Fragment>
+            )}
             <Column
               field={(createAt) =>
                 moment(createAt.createAt).format("DD/MM/YYYY")

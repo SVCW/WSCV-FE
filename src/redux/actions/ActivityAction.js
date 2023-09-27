@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
 import { http } from "../../utils/reponse";
 import { GetFanpageByIDAction } from "./FanpageAction";
-import { GetProfileByIdAction } from "./ProfileAction";
+import { GetProfile1ByIdAction, GetProfileByIdAction } from "./ProfileAction";
 import { SendEmail } from "../../utils/emailService";
 export const GetListActivityAction = () => {
   return async (dispatch) => {
@@ -125,6 +125,7 @@ export const CreateActivityAction = (value, setCreate) => {
       localStorage.setItem("startactivity", value.startDate);
       localStorage.setItem("endstart", value.endDate);
       setCreate(result.data.data.activityId);
+   
     } catch (error) {
       console.log(error);
     }
@@ -155,23 +156,7 @@ export const GetActivityTitleAction = (value) => {
     }
   };
 };
-export const GetActivitySreachAction = (value) => {
-  return async (dispatch) => {
-    try {
-     
-      let result = await http.post(`/Activity/search`, value);
-      console.log(result)
-      const action = {
-        type: "GET_LIST_ACTIVITY_SEARCH",
-        arrActivitySearch: result.data.data,
-      };
-      console.log(result.data.data);
-      dispatch(action);     
-    } catch (error) {
-      console.log(error);
-    }
-  };
-};
+
 export const GetActivityIDAction = (value) => {
   return async (dispatch) => {
     try {
@@ -207,6 +192,8 @@ export const PostLikeAction = (value) => {
       dispatch(action4);
       const action5 = GetListEndActivityAction();
       dispatch(action5);
+      const action9 = GetProfile1ByIdAction(localStorage.getItem('useridprofile1'));
+      dispatch(action9)
     } catch (error) {
       console.log(error);
     }
@@ -283,6 +270,8 @@ export const DeleteLikeAction = (value) => {
       dispatch(action4);
       const action5 = GetListEndActivityAction();
       dispatch(action5);
+      const action9 = GetProfile1ByIdAction(localStorage.getItem('useridprofile1'));
+      dispatch(action9)
     } catch (error) {
       console.log(error);
     }
@@ -472,6 +461,31 @@ export const RecommentActivityAction = (value, id) => {
       dispatch(action);
       const action1 = GetListActivityAction();
       dispatch(action1);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+export const GetActivitySreachAction = (value) => {
+  return async (dispatch) => {
+    try {
+     
+      let result = await http.post(`/Activity/search`, value);
+      console.log(result)
+      const action = {
+        type: "GET_LIST_ACTIVITY_SEARCH",
+        arrActivitySearch: result.data.data,
+      };
+      const search = {
+        userId: localStorage.getItem('userID'),
+        searchContent: value.search
+      }
+      const action1 = RecommentActivityAction(search,localStorage.getItem('userID'));
+      dispatch(action1)
+
+
+      console.log(result.data.data);
+      dispatch(action);     
     } catch (error) {
       console.log(error);
     }

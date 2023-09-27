@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import moment from "moment";
 import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
@@ -339,7 +339,7 @@ export default function Volunteer() {
     return (
       <Button
         label="Tải xuống"
-        icon="pi pi-upload"
+        icon="pi pi-download"
         style={{ marginRight: "50px" }}
         className="p-button-help"
         onClick={exportCSV}
@@ -562,6 +562,20 @@ export default function Volunteer() {
               sortable
               style={{ minWidth: "12rem" }}
             ></Column>
+            {op === "Banned" ? (
+              <Column
+                field="banUser[0]?.reasonBan"
+                header="Lý do"
+                sortable
+                style={{ minWidth: "12rem" }}
+                body={(rowData) => {
+                  const reason = rowData.banUser?.[0]?.reasonBan;
+                  return reason;
+                }}
+              ></Column>
+            ) : (
+              <Fragment></Fragment>
+            )}
             <Column
               field={(createAt) =>
                 moment(createAt.createAt).format("DD/MM/YYYY")

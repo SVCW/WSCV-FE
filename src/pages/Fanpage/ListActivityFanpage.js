@@ -10,7 +10,7 @@ export default function ListActivityFanpage(props) {
   const { userID } = useSelector((root) => root.LoginReducer);
   return (
     <div className="row">
-      <div className="col-lg-9">
+      <div className="col-lg-12">
         {arrActivity
           ?.filter((item) => item.status === "Active")
           ?.map((item, index) => {
@@ -43,11 +43,11 @@ export default function ListActivityFanpage(props) {
             );
           })}
       </div>
-      <div className="col-lg-3">
+      {/* <div className="col-lg-3">
         <aside className="sidebar static right">
           <Game />
         </aside>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -11,6 +11,14 @@ export const CreateProcessAction = (value, handleClick1) => {
             localStorage.setItem('activityprocess', '')
             localStorage.setItem('startactivity', '')
             localStorage.setItem('endstart', '')
+            Swal.fire({
+                title: "Thành công",
+                text: "Chiến dịch của bạn đã được ghi nhận. Vui lòng chờ được kiểm duyệt bởi hệ thống SVCW nhé!",
+                icon: "success",
+                showCancelButton: false,
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Hoàn thành",
+              });
             handleClick1()
         } catch (error) {
             console.log(error);

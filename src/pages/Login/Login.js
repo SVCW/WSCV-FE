@@ -74,6 +74,22 @@ export default function Login (props) {
                 }
                 await dispatch(action1)
                 props.history.push('/adminstatistical')
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener("mouseenter", Swal.stopTimer);
+                      toast.addEventListener("mouseleave", Swal.resumeTimer);
+                    },
+                  });
+          
+                  Toast.fire({
+                    icon: "success",
+                    title: `Đăng nhập thành công`,
+                  });
             }
             else {
                 const action = LoginModeratorAction(value, props);
@@ -167,7 +183,7 @@ export default function Login (props) {
                                 Đăng nhập với Google
                             </p>
                         </form>
-                        {msgModerator !== '' ? <h3 style={{ color: 'red' }}>{msgModerator}</h3> : <div></div>}
+                        {msgModerator !== '' ? <div style={{ color: 'red' }}>{msgModerator}</div> : <div></div>}
                         {msg !== '' ? <div style={{ color: 'red' }}>{localStorage.getItem('setError')}</div> : <div></div>}
                     </div>
                 </div>

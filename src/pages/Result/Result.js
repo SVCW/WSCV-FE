@@ -179,7 +179,7 @@ export default function Result() {
                                         ) : (
                                           <>{item?.activity?.description}</>
                                         )}
-                                        <div style={{ display: "flex" }}>
+                                        <div style={{ display: "flex" , marginTop:'15px'}}>
                                           <div style={{ marginRight: "30px" }}>
                                             <i className="icofont-like" />
                                             <a title="Reads" href="#">
@@ -249,7 +249,9 @@ export default function Result() {
                                           Trạng thái:{" "}
                                           <span>
                                             {" "}
-                                            <i>{item.status ==="success" ? "ủng hộ thành công" : item.status}</i>
+                                            <i>{item.status ==="success" ?
+                                             "Ủng hộ thành công" : item.status ==="refund"
+                                              ? "Chiến dịch đã ngừng! Hoàn tiền thành công" :item.status }</i>
                                           </span>
                                         </div>
                                       </li>
@@ -337,7 +339,7 @@ export default function Result() {
                                         ) : (
                                           <>{item?.activity?.description}</>
                                         )}
-                                        <div style={{ display: "flex" }}>
+                                        <div style={{ display: "flex", marginTop:'15px' }}>
                                           <div style={{ marginRight: "30px" }}>
                                             <i className="icofont-like" />
                                             <a title="Reads" href="#">
@@ -704,7 +706,7 @@ export default function Result() {
                             </span>
                           </li>
                           <li>
-                            Số lần ủng hộ <span>{arrDonation.length}</span>
+                            Số lần ủng hộ <span>{arrDonation.filter(item =>item.status ==="success").length}</span>
                           </li>
                         </ul>
                       </div>

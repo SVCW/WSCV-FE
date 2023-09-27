@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 import { http } from "../../utils/reponse";
 import { GetActivityIDAction, GetListActivityAction, GetListEndActivityAction, GetListEndActivityByUserIDAction, GetRecommentActivityAction } from "./ActivityAction";
 import { GetFanpageByIDAction } from "./FanpageAction";
-import { GetProfileByIdAction } from "./ProfileAction";
+import { GetProfile1ByIdAction, GetProfileByIdAction } from "./ProfileAction";
 import { ScheduleUserAction } from "./UserAction";
 import { SendEmail } from "../../utils/emailService";
 import moment from "moment";
@@ -12,12 +12,14 @@ export const FollowAction = (activity, user) => {
         try {
             let result = await http.post(`/Activity/follow-Activity?activityId=${activity}&userId=${user}`);
             console.log(result.data);
-            const action = GetListActivityAction();
+            const action = await GetListActivityAction();
             dispatch(action)
             const action1 = GetRecommentActivityAction(user);
             dispatch(action1)
             const action2 = GetProfileByIdAction(localStorage.getItem('useridprofile'));
             dispatch(action2)
+            const action9 = GetProfile1ByIdAction(localStorage.getItem('useridprofile1'));
+            dispatch(action9)
             const action3 = GetActivityIDAction(activity)
             dispatch(action3)
             const action4 = GetFanpageByIDAction(localStorage.getItem('fanpagedatail'));
@@ -54,7 +56,7 @@ export const UnFollowAction = (activity, user) => {
         try {
             let result = await http.put(`/Activity/unfollow-activity?activityId=${activity}&userId=${user}`);
             console.log(result.data);
-            const action = GetListActivityAction();
+            const action =await GetListActivityAction();
             dispatch(action)
             const action1 = GetRecommentActivityAction(user);
             dispatch(action1)
@@ -68,6 +70,8 @@ export const UnFollowAction = (activity, user) => {
             dispatch(action7)
             const action8 = GetListEndActivityByUserIDAction(user);
             dispatch(action8)
+            const action9 = GetProfile1ByIdAction(localStorage.getItem('useridprofile1'));
+            dispatch(action9)
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -98,7 +102,7 @@ export const JoinAction = (activity, user,title,location,startDate,endDate) => {
             let result = await http.post(`/Activity/join-Activity?activityId=${activity}&userId=${user}`);
             console.log(result.data);
 
-            const action = GetListActivityAction();
+            const action =await GetListActivityAction();
             dispatch(action)
             const action1 = GetRecommentActivityAction(user);
             dispatch(action1)
@@ -114,6 +118,8 @@ export const JoinAction = (activity, user,title,location,startDate,endDate) => {
             dispatch(action8)
             const action9 = ScheduleUserAction(user);
             dispatch(action9)
+            const action6 = GetProfile1ByIdAction(localStorage.getItem('useridprofile1'));
+            dispatch(action6)
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -167,7 +173,7 @@ export const UnJoinAction = (activity, user) => {
         try {
             let result = await http.put(`/Activity/disJoin-activity?activityId=${activity}&userId=${user}`);
             console.log(result.data);
-            const action = GetListActivityAction();
+            const action = await GetListActivityAction();
             dispatch(action)
             const action1 = GetRecommentActivityAction(user);
             dispatch(action1)
@@ -183,6 +189,8 @@ export const UnJoinAction = (activity, user) => {
             dispatch(action8)
             const action9 = ScheduleUserAction(user);
             dispatch(action9)
+            const action6 = GetProfile1ByIdAction(localStorage.getItem('useridprofile1'));
+            dispatch(action6)
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",

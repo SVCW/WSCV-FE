@@ -37,6 +37,7 @@ export default function Search(props) {
             "Không tìm thấy kết quả phù hợp"
           ) : (
             <Fragment>
+              <div style={{marginBottom:'20px'}}>Số kết quả tìm kiếm được : {arrActivitySearch?.activities?.length}</div>
               {arrActivitySearch?.activities?.map((item, index) => {
                 return (
                   <div className="search-result-1" style={{ display: "flex" }}>
@@ -72,6 +73,7 @@ export default function Search(props) {
             "Không tìm thấy kết quả phù hợp"
           ) :
           <Fragment>
+             <div style={{marginBottom:'20px'}}>Số kết quả tìm kiếm được : {arrActivitySearch?.users?.length}</div>
             {arrActivitySearch?.users?.map((item, index) => {
             return (
               <div className="search-result-1" style={{ display: "flex" }}>
@@ -107,6 +109,7 @@ export default function Search(props) {
             "Không tìm thấy kết quả phù hợp"
           ) :
           <Fragment>
+            <div style={{marginBottom:'20px'}}>Số kết quả tìm kiếm được : {arrActivitySearch?.fanpages?.length}</div>
             {arrActivitySearch?.fanpages?.map((item, index) => {
             return (
               <div className="search-result-1" style={{ display: "flex" }}>

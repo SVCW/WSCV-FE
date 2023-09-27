@@ -40,7 +40,7 @@ export default function ListDonateDone() {
     <div>
       <div className="widget">
         <h4 className="widget-title">Danh sách ủng hộ</h4>
-        <span>Dánh sách ủng hộ trên WSCV</span>
+        <span>Danh sách ủng hộ trên SVCW</span>
         <ul className="prof-complete ">
           {visibleItems.map((item, index) => (
             <li key={index}>

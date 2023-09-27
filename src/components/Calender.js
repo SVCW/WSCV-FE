@@ -4,7 +4,7 @@ import Calendar from "react-calendar";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { ScheduleUserAction } from "../redux/actions/UserAction";
-
+import {NavLink} from 'react-router-dom'
 const Calender = (props) => {
   const [arr, setArr] = useState([]);
   const dispatch = useDispatch();
@@ -127,15 +127,15 @@ const Calender = (props) => {
     if (dayEvents.length > 0) {
       const popupContent = dayEvents.map((event, index) => (
         <div key={index}>
-          <div
+          <div style={{width:'90%', margin:'0 auto'}}>
+          <NavLink
             style={{ fontSize: "20px", textAlign: "center", cursor: "pointer" }}
-            onClick={() => {
-              props.history.push(`/detailactivity/${event.actiID}`);
-            }}
+            to={`/detailactivity/${event.actiID}`}
           >
-            <span style={{ fontSize: "20px", color: "#007bff" }}>
+            <span style={{ fontSize: "20px", color: "#007bff" , textAlign:'center', width:'60%', marginLeft:'30px'}}>
               {event.title}
             </span>
+          </NavLink>
           </div>
 
           <div style={{ paddingLeft: "20px" }}>
@@ -184,18 +184,20 @@ const Calender = (props) => {
               <span
                 onClick={closePopup}
                 style={{
-                  position: "absolute",
-                  right: "10px",
-                  top: "5px",
-                  color: "#088dcd",
-                  fontSize: "20px",
-                  border: "1px solid #088dcd",
-                  padding: "0px 13px 4px",
-                  borderRadius: "50%",
-                  cursor: "pointer",
+                  // position: "absolute",
+                  // right: "10px",
+                  // top: "5px",
+                  // color: "#088dcd",
+                  // fontSize: "20px",
+                  // border: "1px solid #088dcd",
+                  // padding: "0px 13px 4px",
+                  // borderRadius: "50%",
+                  // cursor: "pointer",
                 }}
               >
-                x
+                <span className="popup-closed" >
+              <i className="icofont-close" />
+            </span>
               </span>
             </div>
             <div

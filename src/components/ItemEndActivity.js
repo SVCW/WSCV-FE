@@ -606,7 +606,7 @@ export default function ItemEndActivity(props) {
                 </div>
               </div>
               <ins>
-                <NavLink to={`/profile/${ItemActivity?.user?.userId}`}>
+                <NavLink to={`/profile1/${ItemActivity?.user?.userId}`}>
                   <h5 className="name-user">{ItemActivity?.user?.username}</h5>
                 </NavLink>
               </ins>

@@ -126,7 +126,7 @@ export default function DetailFanpage(props) {
                                       <i className="icofont-pen-alt-1" />
                                       Chỉnh sửa
                                       <span>
-                                        Chỉnh sửa thông tin fanpage của bạn
+                                        Chỉnh sửa thông tin tổ chức của bạn
                                       </span>
                                     </li>
                                   </ul>

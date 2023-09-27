@@ -28,6 +28,7 @@ const dispatch = useDispatch()
   useEffect(() => {
     const action = GetStatisticalAction(localStorage.getItem("userID"), year);
     dispatch(action);
+    
   }, []);
 
   useEffect(() => {
@@ -85,17 +86,22 @@ const dispatch = useDispatch()
         y: {
           ticks: {
             color: textColorSecondary1,
+
           },
           grid: {
             color: surfaceBorder1,
+
           },
+          beginAtZero:true
         },
       },
     };
 
     setChartData1(data1);
     setChartOptions1(options1);
-
+    if (data1.datasets[0].data.length === 0) {
+      options1.scales.y.beginAtZero = true;
+    }
 
   }, [arr1]);
 

@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { GetStatisticalAction } from "../../redux/actions/StatisticalAction";
 import { Chart } from "primereact/chart";
-import {NavLink} from 'react-router-dom'
+import { NavLink } from "react-router-dom";
 const StatisticalUser = (props) => {
   const [selectedValue, setSelectedValue] = useState(true);
-const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const handleOptionClick = (value) => {
     setSelectedValue(value);
   };
@@ -17,7 +17,6 @@ const dispatch = useDispatch()
   const { arrStatical } = useSelector((root) => root.StatisticalReducer);
   console.log(arrStatical);
   useEffect(() => {
-   
     setArr(
       arrStatical?.map((item, index) => {
         return selectedValue
@@ -38,6 +37,7 @@ const dispatch = useDispatch()
       "--text-color-secondary"
     );
     const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
+
     const data = {
       labels: [
         "Tháng 1",
@@ -53,16 +53,26 @@ const dispatch = useDispatch()
         "Tháng 11",
         "Tháng 12",
       ],
-      datasets: [
-        {
-          label: "Chiến dịch đã tạo",
-          data: arr,
-          fill: false,
-          borderColor: documentStyle.getPropertyValue("--blue-400"),
-          tension: 0.4,
-        },
-      ],
+      datasets: [],
     };
+
+    if (arr === 0) {
+      data.datasets.push({
+        label: "Chiến dịch đã tạo",
+        data: [0], // Giá trị cũng là 0
+        fill: false,
+        borderColor: documentStyle.getPropertyValue("--blue-400"),
+        tension: 0.4,
+      });
+    } else {
+      data.datasets.push({
+        label: "Chiến dịch đã tạo",
+        data: arr,
+        fill: false,
+        borderColor: documentStyle.getPropertyValue("--blue-400"),
+        tension: 0.4,
+      });
+    }
     const options = {
       maintainAspectRatio: false,
       aspectRatio: 0.6,
@@ -95,17 +105,9 @@ const dispatch = useDispatch()
 
     setChartData(data);
     setChartOptions(options);
-
-
-   
-
-
   }, [arr]);
   const [chartData, setChartData] = useState({});
   const [chartOptions, setChartOptions] = useState({});
-
-
-
 
   return (
     <div className="" style={{ marginTop: "100px" }}>
@@ -135,7 +137,7 @@ const dispatch = useDispatch()
                       >
                         <NavLink
                           className="active"
-                        to ="/statisticaluser"
+                          to="/statisticaluser"
                           data-toggle="tab"
                         >
                           Chiến dịch đã tạo
@@ -145,11 +147,14 @@ const dispatch = useDispatch()
                         className="nav-item"
                         onClick={() => handleOptionClick(false)}
                       >
-                        <NavLink className to ="/statisticaluser1" data-toggle="tab">
+                        <NavLink
+                          className
+                          to="/statisticaluser1"
+                          data-toggle="tab"
+                        >
                           Số tiền đã ủng hộ
                         </NavLink>
                       </li>
-
                     </ul>
                   </div>
                 </div>
@@ -197,11 +202,14 @@ const dispatch = useDispatch()
                               </select>
                             </div>
                             <div className="card">
-      <Chart type="line" data={chartData} options={chartOptions} />
-      </div>
+                              <Chart
+                                type="line"
+                                data={chartData}
+                                options={chartOptions}
+                              />
+                            </div>
                           </div>
                         </div>
-                        
                       </div>
                     </div>
                   </div>
@@ -211,7 +219,6 @@ const dispatch = useDispatch()
           </div>
         </section>
       </div>
-     
     </div>
   );
 };

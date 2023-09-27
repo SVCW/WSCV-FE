@@ -46,31 +46,16 @@ export default function CreateFanpage (props) {
       coverImage: "",
       description: "",
       mst: "",
-      email: localStorage.getItem('emailuser'),
+      email: "",
       phone: "",
       userId: userID,
     },
     validationSchema: validationSchema,
     onSubmit: (value) => {
-
+console.log(value)
       const action = CreateFanpageAction(value, props);
       dispatch(action)
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        },
-      });
-
-      Toast.fire({
-        icon: "success",
-        title: `Gửi yêu cầu tạo tổ chức thành công. Chờ admin kiểm duyệt nhé!!!`,
-      });
+     
     },
   });
   const [avartar, setAvatar] = useState("");
@@ -194,7 +179,7 @@ export default function CreateFanpage (props) {
                                 value={formik.values.email}
                                 type="text"
                                 placeholder="Nhập email"
-                                disabled
+
                               />
                             
                                 <div className="error">
