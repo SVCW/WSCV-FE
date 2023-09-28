@@ -5,12 +5,12 @@ import { GetUserBystatisticAction } from "./UserAction";
 export const GetProfileByIdAction = (id) => {
   return async (dispatch) => {
     try {
-      let result = await http.get(`/User/get-user-by-id?UserId=${id}`);
+      let result = await http.get(`/User/get-user-by-idv2?userId=${id}`);
       console.log(result.data.data.user.userId);
       const action = {
         type: "GET_USER_BY_ID",
         getUserId: result.data.data.user,
-        arrActivityUser: result.data.data?.user?.activity,
+        arrActivityUser: result.data.data?.activity,
       };
       localStorage.setItem(
         "getuserid",
@@ -19,7 +19,7 @@ export const GetProfileByIdAction = (id) => {
       localStorage.setItem("useridprofile", result.data?.data?.user.userId);
       localStorage.setItem(
         "arrActivityUser",
-        JSON.stringify(result.data.data?.user?.activity)
+        JSON.stringify(result.data.data?.activity)
       );
       dispatch(action);
     } catch (error) {
@@ -30,11 +30,12 @@ export const GetProfileByIdAction = (id) => {
 export const GetProfile1ByIdAction = (id) => {
   return async (dispatch) => {
     try {
-      let result = await http.get(`/User/get-user-by-id?UserId=${id}`);
+      let result = await http.get(`/User/get-user-by-idv2?userId=${id}`);
+      console.log(result.data.data?.activity)
       const action = {
         type: "GET_USER_BY_ID_1",
         getUserId1: result.data.data.user,
-        arrActivityUser1: result.data.data?.user?.activity,
+        arrActivityUser1: result.data.data?.activity,
       };
       localStorage.setItem(
         "getuserid1",
@@ -43,7 +44,7 @@ export const GetProfile1ByIdAction = (id) => {
       localStorage.setItem("useridprofile1", result.data?.data?.user.userId);
       localStorage.setItem(
         "arrActivityUser1",
-        JSON.stringify(result.data.data?.user?.activity)
+        JSON.stringify(result.data.data?.activity)
       );
       dispatch(action);
     } catch (error) {

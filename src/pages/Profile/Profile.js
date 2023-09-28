@@ -32,8 +32,7 @@ export default function Profile(props) {
   const dispatch = useDispatch();
   const [reloadPage, setReloadPage] = useState(false);
   const { userID } = useSelector((root) => root.LoginReducer);
-  const { getUserId } = useSelector((root) => root.ProfileReducer);
-  console.log(getUserId);
+  const { getUserId,arrActivityUser } = useSelector((root) => root.ProfileReducer);
   const { arrEndActivityByUserID } = useSelector(
     (root) => root.EndActivityReducer
   );
@@ -269,7 +268,7 @@ export default function Profile(props) {
                                     {/* create new post */}
                                     <div className="">
                                       <ListActivity
-                                        arrActivity={getUserId?.activity}
+                                        arrActivity={arrActivityUser}
                                         getUserId={getUserId}
                                       />
                                     </div>
