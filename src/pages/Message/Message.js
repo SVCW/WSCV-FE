@@ -66,6 +66,21 @@ export default function Message(props) {
         }
     }
 
+    function formatName(inputString) {
+        const words = inputString.split(' '); // Split the input string into an array of words
+        if (words.length >= 2) {
+            // Check if there are at least two words
+            const lastTwoWords = words.slice(-2); // Get the last two words
+            return lastTwoWords.join(' '); // Join them back into a string
+        } else if (words.length === 1) {
+            // If there's only one word, return it
+            return words[0];
+        } else {
+            // If the input is empty or has no words, return an empty string
+            return '';
+        }
+    }
+
     function formatLastSeen(timestamp, lastMess) {
         const str = lastMess ? 'Message' : 'Seen';
         // Get the current date and time
@@ -107,14 +122,10 @@ export default function Message(props) {
         const currentUsr = await getUserInfo(getUserId?.userId);
         const room = await addDoc(chatRoomsRef, {
             type: type,
-            memberIds: [pmUsr.userId, currentUsr.userId],
+            memberIds: [pmUsr.userId, currentUsr?.userId],
             members: [pmUsr, currentUsr],
             createdAt: serverTimestamp(),
             lastSeen: serverTimestamp(),
-            // roomName: pmUsr.fullName ? pmUsr.fullName : 'New Chat Room',
-            image: pmUsr.image ? pmUsr.image : 'none',
-            dateOfBirth: pmUsr.dateOfBirth,
-            email: pmUsr.email,
         })
         // setUserPm(userPm.data());
         return room.id;
@@ -170,7 +181,21 @@ export default function Message(props) {
         if (userId) {
             const users = await getListOfUsers([userId]);
             if (users instanceof Array && users.length > 0) {
-                return users[0];
+                const user = users[0];
+                if (user === null) {
+                    return undefined
+                }
+                return {
+                    dateOfBirth: user.dateOfBirth,
+                    email: user.email,
+                    fullName: user.fullName,
+                    gender: user.gender,
+                    image: user.image,
+                    phone: user.phone,
+                    roleId: user.roleId,
+                    userId: user.userId,
+                    username: user.username,
+                };
             }
         }
         return undefined;
@@ -190,14 +215,13 @@ export default function Message(props) {
             //get all room first
             const allRoomsRef = query(chatRoomsRef,
                 where('memberIds', 'array-contains', userId),
-                orderBy('lastSeen', 'asc'));
+                orderBy('lastSeen', 'desc'));
             const allUserRooms = await getDocs(allRoomsRef);
-            let currentRoom = undefined;
             //if have room
             if (allUserRooms.empty) {
                 if (id) {
                     // const existUser = await getDoc(doc(firestore, 'users', id));
-                    const existUser = getUserInfo(id);
+                    const existUser = await getUserInfo(id);
                     if (existUser) {
                         // create new PM Room ID for this user to the url userId
                         const createdRoomId = await newPmRoom(existUser, 'pm')
@@ -205,8 +229,8 @@ export default function Message(props) {
                             const newRoom = await getDoc(doc(firestore, 'chatRooms', createdRoomId))
                             if (newRoom.exists()) {
                                 const cookedRoom = {
-                                    ...createdRoomId.data(),
-                                    id: createdRoomId.id,
+                                    ...newRoom.data(),
+                                    id: newRoom.id,
                                     pmUserId: existUser.userId,
                                     image: existUser.image,
                                     roomName: existUser.fullName,
@@ -322,7 +346,7 @@ export default function Message(props) {
 
         const allUserRoomsRef = query(chatRoomsRef,
             where('memberIds', 'array-contains', getUserId?.userId),
-            orderBy('lastSeen', 'asc'));
+            orderBy('lastSeen', 'desc'));
         const unSubUserRooms = onSnapshot(allUserRoomsRef, (snapshot) => {
             const data = snapshot.docs.map(room => {
                 if (room.data().type === 'pm') {
@@ -411,6 +435,7 @@ export default function Message(props) {
                     content: iconId,
                     roomId: currentRoom?.id,
                     username: chatter?.username,
+                    fullName: chatter?.fullName,
                     userId: getUserId?.userId,
                     timestamp: Timestamp.fromDate(new Date()),
                 });
@@ -509,28 +534,12 @@ export default function Message(props) {
                                                                     <img
                                                                         style={{ backgroundColor: 'white', width: 35, height: 35, objectFit: 'hidden', borderRadius: '100%' }}
                                                                         src={gr?.image === 'none' ? "../images/default-avt.png" : gr.image} alt />
-                                                                    <span>{gr?.roomName}</span>
+                                                                    <span>{formatName(gr.roomName)}</span>
                                                                     <div className={"status " + isActive(gr?.lastSeen) ? 'online' : 'offline'} />
                                                                 </div>
                                                             )
                                                         }))
                                                     }
-
-                                                    {/* <div className="useravatar">
-                                                        <img src="../images/default-avt.png" alt />
-                                                        <span>Noah</span>
-                                                        <div className="status offline" />
-                                                    </div>
-                                                    <div className="useravatar">
-                                                        <img src="../images/default-avt.png" alt />
-                                                        <span>Maria</span>
-                                                        <div className="status offline" />
-                                                    </div>
-                                                    <div className="useravatar">
-                                                        <img src="../images/default-avt.png" alt />
-                                                        <span>Ellie</span>
-                                                        <div className="status offline" />
-                                                    </div> */}
                                                 </div>
 
                                                 <h3 className="main-title">Friends</h3>
@@ -544,7 +553,7 @@ export default function Message(props) {
                                                                     <img
                                                                         style={{ backgroundColor: 'white', width: 35, height: 35, objectFit: 'hidden', borderRadius: '100%' }}
                                                                         src={fr?.image === 'none' ? "../images/default-avt.png" : fr.image} alt />
-                                                                    <span>{fr.roomName}</span>
+                                                                    <span>{formatName(fr.roomName)}</span>
 
                                                                     <div className={isActive(fr?.lastSeen) ? 'status online' : 'status offline'} />
                                                                 </div>
@@ -555,7 +564,7 @@ export default function Message(props) {
 
                                                 <div className="message-content">
                                                     <div className="chat-header">
-                                                        <div className="status online" />
+                                                        {/* <div className="status online" /> */}
                                                         <h6>{formatLastSeen(userPm?.lastSeen)}</h6>
                                                         <div className="corss">
                                                             <span className="report"><i className="icofont-flag" /></span>
@@ -595,7 +604,7 @@ export default function Message(props) {
                                                                                 )
                                                                             }
                                                                             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: getUserId?.userId === msg?.userId ? 'flex-end' : 'flex-start' }}>
-                                                                                <h5 style={{ fontSize: 11, marginBottom: '1px', marginLeft: '19px', marginRight: '19px' }} href='#' alt=''>{getUserId?.userId === msg?.userId ? '' : msg?.username}</h5>
+                                                                                <h5 style={{ fontSize: 11, marginBottom: '1px', marginLeft: '19px', marginRight: '19px' }} href='#' alt=''>{getUserId?.userId === msg?.userId ? '' : msg?.fullName ? msg?.fullName : msg?.username}</h5>
                                                                                 {msg.type === 'pmi' ? (
                                                                                     <p style={{ display: 'inline-flex', marginBottom: '1', wordWrap: 'break-word', overflow: 'hidden' }}>
                                                                                         <img src={getIconSource(msg.content)}></img>
