@@ -24,6 +24,8 @@ import { GetListReportTypeAction } from "../../redux/actions/ReportTypeAction";
 import YourFanpage from "../../components/YourFanpage";
 import Loading from "../../components/Loading";
 import StopActivity from "../StopActivity/StopActivity";
+import Other1 from "../../components/Other1";
+import YourFanpage2 from "../../components/YourFanpage2";
 
 export default function Profile(props) {
   const { id } = props.match.params;
@@ -62,6 +64,7 @@ export default function Profile(props) {
     // };
     // dispatch(loading1);
   }, []);
+  
   return (
     <div>
       {/* {loading ? <Loading /> : <Fragment></Fragment>} */}
@@ -75,7 +78,8 @@ export default function Profile(props) {
                     <div className="col-lg-3">
                       <aside className="sidebar static left">
                         <Clock />
-                        <CompleteInfo />
+                        {/* <CompleteInfo /> */}
+                        <Other1 />
                       </aside>
                     </div>
                     <div className="col-lg-9">
@@ -253,7 +257,9 @@ export default function Profile(props) {
                                       />
                                     </div>
                                   </div>
-                                  <Other />
+                                  <div className="col-lg-4">
+                                  <YourFanpage2 />
+                                  </div>
                                 </div>
                               </div>
 

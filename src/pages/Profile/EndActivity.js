@@ -17,7 +17,7 @@ export default function EndActivity (props) {
 
           
         </div>
-        <Other />
+        
       </div>
     </div>
   );

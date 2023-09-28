@@ -24,6 +24,7 @@ import { GetListReportTypeAction } from "../../redux/actions/ReportTypeAction";
 import YourFanpage from "../../components/YourFanpage";
 import Loading from "../../components/Loading";
 import StopActivity from "../StopActivity/StopActivity";
+import Other1 from "../../components/Other1";
 
 export default function Profile1(props) {
   const { id } = props.match.params;
@@ -75,7 +76,8 @@ export default function Profile1(props) {
                     <div className="col-lg-3">
                       <aside className="sidebar static left">
                         <Clock />
-                        <CompleteInfo />
+                        {/* <CompleteInfo /> */}
+                        <Other1 />
                       </aside>
                     </div>
                     <div className="col-lg-9">
@@ -253,7 +255,7 @@ export default function Profile1(props) {
                                       />
                                     </div>
                                   </div>
-                                  <Other />
+                                  {/* <Other /> */}
                                 </div>
                               </div>
 
