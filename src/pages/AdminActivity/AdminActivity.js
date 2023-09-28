@@ -515,7 +515,7 @@ export default function AdminActivity() {
     </React.Fragment>
   );
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
@@ -905,7 +905,7 @@ export default function AdminActivity() {
                       textAlign: "center",
                       width: "800px",
                       marginLeft: "200px",
-                    }}
+                    }} className="img-sli"
                   >
                     <Slider {...settings} style={{ height: "500px" }}>
                       {activity.media?.map((item, index) => {
@@ -915,6 +915,7 @@ export default function AdminActivity() {
                               src={item.linkMedia}
                               width={800}
                               height={500}
+                              style={{maxHeight:'400px'}}
                             />
                           </div>
                         );
@@ -928,39 +929,54 @@ export default function AdminActivity() {
                       paddingBottom: "100px",
                     }}
                   >
-                    <p style={{ fontWeight: 800 }}>
+                    <p style={{ fontWeight: 800,fontSize: "18px", }}>
                       Bắt đầu :{" "}
                       {moment(activity?.startDate).format("DD/MM/YYYY")}
                     </p>
-                    <p style={{ fontWeight: 800 }}>
+                    <p style={{ fontWeight: 800,fontSize: "18px", }}>
                       Kết thúc :{" "}
                       {moment(activity?.endDate).format("DD/MM/YYYY")}
                     </p>
+                      <p style={{ fontWeight: 800,fontSize: "18px", }}>
+                     Đối tượng hổ trợ: {activity?.location}
+                    </p>
+                    <hr />
                     {/* <p style={{ fontWeight: 800 }}>Hoạt động :</p> */}
                     <div style={{ width: "800px" }}>
                       <Slider {...settings}>
                         {activity.process?.map((item, index) => {
                           return (
                             <div style={{ textAlign: "center" }} key={index}>
-                              <p style={{ fontWeight: 800 }}>
+                              <p style={{ fontWeight: 800, fontSize:'20px' }}>
                                 Hoạt động : {item.processNo}
                               </p>
-                              <p style={{ fontSize: "20px", color: "#3f6ad8" }}>
+                              <p style={{ fontSize: "20px", color: "#3f6ad8", textAlign:'center' }}>
                                 {item.processTitle}
                               </p>
-                              <p>- {item.description}</p>
-                              <div style={{ width: "800px", height: "400px" }}>
+                              <p> {item.description}</p>
+                              <div style={{ width: "800px" ,maxHeight:'400px',}} className="img-sli">
                                 <Slider {...settings}>
                                   {item.media?.map((item1, index) => {
                                     return (
                                       <img
                                         src={item1.linkMedia}
                                         width={800}
-                                        height={400}
+                                     
+                                        style={{maxHeight:'400px'}}
                                       />
                                     );
                                   })}
                                 </Slider>
+                              </div>
+                              <div style={{marginTop:'20px'}}>
+                              <p style={{ fontWeight: 800,fontSize: "18px", }}>
+                     - Bắt đầu :{" "}
+                      {moment(item?.startDate).format("DD/MM/YYYY hh:mm A")}
+                    </p>
+                    <p style={{ fontWeight: 800,fontSize: "18px", }}>
+                     - Kết thúc :{" "}
+                      {moment(item?.endDate).format("DD/MM/YYYY hh:mm A")}
+                    </p>
                               </div>
                               {item.isParticipant ? (
                                 <div

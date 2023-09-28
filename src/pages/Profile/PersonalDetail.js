@@ -27,7 +27,7 @@ const PersonalDetail = ({ setReloadPage, reloadPage, arrActivity }) => {
 
 
   const dispatch = useDispatch();
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const [info, setInfo] = useState(arrActivity);
 
   const handleSubmit = async (e) => {

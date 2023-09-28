@@ -137,7 +137,7 @@ export default function Result() {
 
                                       <div className="blog-post-meta">
                                         <h4>{item.activity?.title}</h4>
-                                        {isReadMore ? (
+                                        {/* {isReadMore ? (
                                           item?.activity?.description?.length >
                                           100 ? (
                                             <>
@@ -178,7 +178,8 @@ export default function Result() {
                                           </>
                                         ) : (
                                           <>{item?.activity?.description}</>
-                                        )}
+                                        )} */}
+                                          {item?.activity?.description.length >200 ? <div>{(item?.activity?.description).slice(0,200)+ '...'}</div> :item?.activity?.description}
                                         <div style={{ display: "flex" , marginTop:'15px'}}>
                                           <div style={{ marginRight: "30px" }}>
                                             <i className="icofont-like" />
@@ -297,7 +298,7 @@ export default function Result() {
                                       </figure>
                                       <div className="blog-post-meta">
                                         <h4>{item?.activity?.title}</h4>
-                                        {isReadMore ? (
+                                        {/* {isReadMore ? (
                                           item?.activity?.description?.length >
                                           100 ? (
                                             <>
@@ -338,7 +339,8 @@ export default function Result() {
                                           </>
                                         ) : (
                                           <>{item?.activity?.description}</>
-                                        )}
+                                        )} */}
+                                        {item?.activity?.description.length >200 ? <div>{(item?.activity?.description).slice(0,200)+ '...'}</div> :item?.activity?.description}
                                         <div style={{ display: "flex", marginTop:'15px' }}>
                                           <div style={{ marginRight: "30px" }}>
                                             <i className="icofont-like" />

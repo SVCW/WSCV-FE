@@ -140,7 +140,7 @@ export default function CreateActivity() {
     enableReinitialize: true,
     validationSchema,
     onSubmit: async (value) => {
-      console.log(value)
+      console.log(value);
       const action = await CreateActivityAction(value, setCreate);
       await dispatch(action);
       formik.setFieldValue("title", "");
@@ -248,12 +248,23 @@ export default function CreateActivity() {
       updatedInputFields[index].targetParticipant = 0;
       updatedInputFields[index].isDonateProcess = true;
       updatedInputFields[index].isParticipant = false;
-    }
-    else if (updatedInputFields[index].processTypeId !== "pt001") {
+    } else if (updatedInputFields[index].processTypeId === "pt004") {
       updatedInputFields[index].targetDonation = 0;
       updatedInputFields[index].isDonateProcess = false;
-    }
-    else if (
+      setError("1");
+    } else if (updatedInputFields[index].processTypeId === "pt005") {
+      updatedInputFields[index].targetDonation = 0;
+      updatedInputFields[index].isDonateProcess = false;
+      setError("1");
+    } else if (updatedInputFields[index].processTypeId === "pt006") {
+      updatedInputFields[index].targetDonation = 0;
+      updatedInputFields[index].isDonateProcess = false;
+      setError("1");
+    } else if (updatedInputFields[index].processTypeId === "pt007") {
+      updatedInputFields[index].targetDonation = 0;
+      updatedInputFields[index].isDonateProcess = false;
+      setError("1");
+    } else if (
       moment(localStorage.getItem("startactivity")).isAfter(
         updatedInputFields[index].startDate
       )
@@ -695,7 +706,10 @@ export default function CreateActivity() {
                             style={{ marginRight: "20px" }}
                             htmlFor="name"
                           >
-                            Chia sẻ lên tổ chức của bạn
+                            Đây là chiến dịch thuộc tổ chức{" "}
+                            <span style={{ fontWeight: 800 }}>
+                              {getUserId?.fanpage?.fanpageName}
+                            </span>
                           </label>
                           <input
                             type="checkbox"
@@ -930,7 +944,13 @@ export default function CreateActivity() {
                           justifyContent: "space-between",
                         }}
                       >
-                        <div style={{ fontSize: "18px", fontWeight: "bold" }}>
+                        <div
+                          style={{
+                            fontSize: "18px",
+                            fontWeight: "bold",
+                            marginBottom: "10px",
+                          }}
+                        >
                           Hoạt động {index + 1}
                         </div>
                         <div className="">
@@ -1172,51 +1192,85 @@ export default function CreateActivity() {
                                 />
                               </div>
                             ) : data.processTypeId === "pt001" ? (
-                              <div className="form-group mt-3">
-                                <label id="name-label" htmlFor="name">
-                                  Số tiền ủng hộ
-                                </label>
-                                <input
-                                  type=""
-                                  min={0}
-                                  name="targetDonation"
-                                  value={formatNumberWithCommas(
-                                    data.targetDonation
-                                  )}
-                                  onChange={(event) => {
-                                    const inputValue =
-                                      event.target.value.replace(/\D/g, ""); // Chỉ giữ lại ký tự số
+                              formik.values.isFanpageAvtivity === true ? (
+                                <div>
+                                  <div className="form-group mt-3">
+                                    <label id="name-label" htmlFor="name">
+                                      Số tiền ủng hộ
+                                    </label>
+                                    <input
+                                      type=""
+                                      min={0}
+                                      name="targetDonation"
+                                      value={formatNumberWithCommas(
+                                        data.targetDonation
+                                      )}
+                                      onChange={(event) => {
+                                        const inputValue =
+                                          event.target.value.replace(/\D/g, ""); // Chỉ giữ lại ký tự số
 
-                                    if (
-                                      Number(inputValue) >
-                                      Number(localStorage.getItem("maxDonate"))
-                                    ) {
-                                      Swal.fire({
-                                        title: "Cảnh báo",
-                                        text: `Số tiền lớn hơn số tiền tối đa bạn có thể tạo cho chiến dịch! ${Number(
+                                        handleInputChange(
+                                          index,
+                                          "targetDonation",
+                                          Number(inputValue)
+                                        );
+                                        setError("1");
+                                      }}
+                                      id="name"
+                                      className="form-control"
+                                      required
+                                    />
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="form-group mt-3">
+                                  <label id="name-label" htmlFor="name">
+                                    Số tiền ủng hộ
+                                  </label>
+                                  <input
+                                    type=""
+                                    min={0}
+                                    name="targetDonation"
+                                    value={formatNumberWithCommas(
+                                      data.targetDonation
+                                    )}
+                                    onChange={(event) => {
+                                      const inputValue =
+                                        event.target.value.replace(/\D/g, ""); // Chỉ giữ lại ký tự số
+
+                                      if (
+                                        Number(inputValue) >
+                                        Number(
                                           localStorage.getItem("maxDonate")
-                                        )?.toLocaleString()} vnđ`,
-                                        icon: "warning",
-                                        showCancelButton: false,
-                                        confirmButtonColor: "#3085d6",
-                                        confirmButtonText: "Đồng ý",
-                                        zIndex: 999,
-                                      });
-                                      setError("2");
-                                    } else {
-                                      handleInputChange(
-                                        index,
-                                        "targetDonation",
-                                        Number(inputValue)
-                                      );
-                                      setError("1");
-                                    }
-                                  }}
-                                  id="name"
-                                  className="form-control"
-                                  required
-                                />
-                              </div>
+                                        )
+                                      ) {
+                                        Swal.fire({
+                                          title: "Cảnh báo",
+                                          text: `Số tiền lớn hơn số tiền tối đa bạn có thể tạo cho chiến dịch! ${Number(
+                                            localStorage.getItem("maxDonate")
+                                          )?.toLocaleString()} vnđ`,
+                                          icon: "warning",
+                                          showCancelButton: false,
+                                          confirmButtonColor: "#3085d6",
+                                          confirmButtonText: "Đồng ý",
+                                          zIndex: 999,
+                                        });
+                                        setError("2");
+                                      } else {
+                                        handleInputChange(
+                                          index,
+                                          "targetDonation",
+                                          Number(inputValue)
+                                        );
+                                        setError("1");
+                                      }
+                                    }}
+                                    id="name"
+                                    className="form-control"
+                                    required
+                                  />
+                                </div>
+                              )
                             ) : null}
                           </div>
                         </div>

@@ -179,7 +179,7 @@ const Calender = (props) => {
       />
       {showPopup && (
         <div style={{ position:'relative', zIndex:999 }}>
-          <div className="popup" style={{position:'fixed', padding: "20px 0",zIndex:999 }}>
+          <div className="popup" style={{position:'fixed',top:'29%', padding: "20px 0",zIndex:999 }}>
             <div>
               <span
                 onClick={closePopup}

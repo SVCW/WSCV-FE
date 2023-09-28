@@ -154,7 +154,7 @@ const[days,setDay] = useState('')
         onClickDay={handleDayClick}
       />
       {showPopup && (
-        <div className="" style={{ marginTop: "200px" }}>
+        <div className="" style={{ marginTop: "50px" }}>
           <div className="popup" style={{ padding: "20px 0" }}>
             <div>
               <span

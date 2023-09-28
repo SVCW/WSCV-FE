@@ -7,7 +7,7 @@ import Calender from "./Calender";
 import { ScheduleUserAction } from "../redux/actions/UserAction";
 import { useState } from "react";
 
-export default function YourFanpage () {
+export default function YourFanpage1 () {
   const [arr ,setArr] = useState([])
   const dispatch = useDispatch();
   const { userID } = useSelector((root) => root.LoginReducer);
@@ -58,59 +58,10 @@ useEffect(()=>{
   return (
     <div className="">
       <aside className="sidebar static right">
-        {localStorage.getItem("userID") &&
-          getUserId?.fanpage?.status === "Active" ? (
-          <div className="widget">
-            <h4 className="widget-title">Tổ chức của bạn</h4>
-            <ul className="ak-groups">
-              <li>
-                <figure>
-                  <NavLink to={`/fanpage/${localStorage.getItem("userID")}`}>
-                    <img
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        objectfit: "cover",
-                      }}
-                      src={getUserId?.fanpage?.avatar}
-                      alt
-                    />
-                  </NavLink>
-                </figure>
-                <div className="your-grp">
-                  <h5>
-                    <NavLink
-                      to={`/fanpage/${localStorage.getItem("userID")}`}
-                      title
-                      style={{
-                        fontSize: "20px",
-                        width: "350px",
-
-                      }}
-                    >
-                      {getUserId?.fanpage?.fanpageName}
-                    </NavLink>
-                  </h5>
-                  {/* <NavLink
-                    to={`/fanpage/${localStorage.getItem("userID")}`}
-                    href="group-feed.html"
-                    title
-                    className="fanpage-y"
-                    onClick={() => { }}
-                  >
-                    Chi tiết
-                  </NavLink> */}
-                    {getUserId?.fanpage?.description.length >200 ? <div>{(getUserId?.fanpage?.description).slice(0,200)+ '...'}</div> :getUserId?.fanpage?.description}
-                </div>
-              </li>
-            </ul>
-          </div>
-        ) : (
-          <div></div>
-        )}
+      
         <RecommentActivity />
         <Calender arr ={arr}/>
-        {/* <Game /> */}
+       
         
       </aside>
     </div>
