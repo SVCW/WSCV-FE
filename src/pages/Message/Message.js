@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Timestamp, addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, setDoc, updateDoc, serverTimestamp, where, getDocs } from 'firebase/firestore';
 import { firestore } from '../../firebase';
 import { useSelector } from 'react-redux';
+import { getListOfUsers } from '../../redux/actions/UserAction';
 export default function Message(props) {
     const { id } = props.match.params;
     console.log('test Is get: ', id);
@@ -14,12 +15,12 @@ export default function Message(props) {
     const [currentRoom, setCurrentRoom] = useState();
     const [showIcon, setShowIcon] = useState(false);
     const [noRoom, setNoRoom] = useState(false);
-    const [iconToSend, setIconToSend] = useState('');
+    // const [iconToSend, setIconToSend] = useState('');
     const [userRooms, setUserRooms] = useState([]);
     const [userGroups, setUserGroups] = useState([]);
     const [userFriends, setUserFriends] = useState([]);
-    const [userRoomIds, setUserRoomIds] = useState([]);
-    const [currentRoomId, setCurrentRoomId] = useState();
+    // const [userRoomIds, setUserRoomIds] = useState([]);
+    // const [currentRoomId, setCurrentRoomId] = useState();
     const [userMsgs, setUserMsgs] = useState([]);
 
     const [formData, setFormData] = useState({
@@ -27,9 +28,9 @@ export default function Message(props) {
     })
     const messagesRef = collection(firestore, "messages");
     const chatRoomsRef = collection(firestore, "chatRooms");
-    const allUserRoomsRef = query(chatRoomsRef,
-        where('memberIds', 'array-contains', getUserId?.userId),
-        orderBy('lastSeen', 'asc'));
+    // const allUserRoomsRef = query(chatRoomsRef,
+    //     where('memberIds', 'array-contains', getUserId?.userId),
+    //     orderBy('lastSeen', 'asc'));
 
     // play noti sound
     const notificationSound = document.getElementById('newMessageSound');
@@ -60,7 +61,7 @@ export default function Message(props) {
             const currentTimestamp = Date.now();
 
             const fifteenMinutesInSeconds = 15 * 60 * 1000;
-            console.log(timestampToCheck.toMillis(), '    ', currentTimestamp)
+            // console.log(timestampToCheck.toMillis(), '    ', currentTimestamp)
             return currentTimestamp - timestampToCheck.toMillis() <= fifteenMinutesInSeconds;
         }
     }
@@ -101,234 +102,298 @@ export default function Message(props) {
         // Check if the timestamp is from today
 
     }
-    async function newPmRoom(pmId, type) {
-        const currentUsr = await getDoc(doc(firestore, "users", getUserId?.userId))
-        const userPm = await getDoc(doc(firestore, "users", pmId));
-        if (userPm.exists()) {
-            const room = await addDoc(chatRoomsRef, {
-                type: type,
-                memberIds: [userPm.data().userId, currentUsr.data().userId],
-                members: [userPm.data(), currentUsr.data()],
-                pmUserId: type === 'pm' ? pmId : '',
-                pmUser: userPm.data(),
-                createdAt: serverTimestamp(),
-                // lastSeen: serverTimestamp(),
-                roomName: userPm.data().fullName ? userPm.data().fullName : 'New Chat Room',
-                image: userPm.data().image ? userPm.data().image : 'none',
-                dateOfBirth: userPm.data().dateOfBirth,
-                email: userPm.data().email,
-            })
-            setUserPm(userPm.data());
-            return room.id;
+
+    async function newPmRoom(pmUsr, type) {
+        const currentUsr = await getUserInfo(getUserId?.userId);
+        const room = await addDoc(chatRoomsRef, {
+            type: type,
+            memberIds: [pmUsr.userId, currentUsr.userId],
+            members: [pmUsr, currentUsr],
+            createdAt: serverTimestamp(),
+            lastSeen: serverTimestamp(),
+            // roomName: pmUsr.fullName ? pmUsr.fullName : 'New Chat Room',
+            image: pmUsr.image ? pmUsr.image : 'none',
+            dateOfBirth: pmUsr.dateOfBirth,
+            email: pmUsr.email,
+        })
+        // setUserPm(userPm.data());
+        return room.id;
+    }
+
+    async function setUpCurrentRoom(room) {
+        // if ((currentRoom?.id === room?.id) || !currentRoom || !room) {
+        //     return;
+        // }
+        if (room.type === 'pm') {
+            const members = room.members;
+            if (members instanceof Array) {
+                members.map((mem) => {
+                    if (mem.userId !== getUserId.userId) {
+                        setUserPm(mem);
+                    }
+                })
+
+            }
+        }
+        if (room.type === 'gr') {
+            // not yet
+        }
+        setCurrentRoom(room);
+    }
+
+    // classify rooms
+    useEffect(() => {
+        if (userRooms instanceof Array && userRooms.length < 1) {
+            setNoRoom(true);
+            return;
+        }
+        const groups = [];
+        const friends = [];
+        userRooms.forEach(room => {
+            if (room.isGroup) {
+                groups.push(room);
+            } else {
+                friends.push(room);
+            }
+        })
+        setUserGroups(groups);
+        setUserFriends(friends);
+    }, [userRooms])
+
+    function theOtherChatter(members, chatterId) {
+        if (members instanceof Array && members.length === 2) {
+            return members.find(mem => mem.userId !== chatterId);
+        }
+        return undefined
+    }
+    async function getUserInfo(userId) {
+        if (userId) {
+            const users = await getListOfUsers([userId]);
+            if (users instanceof Array && users.length > 0) {
+                return users[0];
+            }
         }
         return undefined;
     }
     useEffect(() => {
-        async function getChatter(userId) {
-            const userRef = doc(firestore, "users", userId);
-            const user = await getDoc(userRef);
-            if (user.exists()) {
-                if (userId === getUserId?.userId) {
-                    console.log('User before update: ', user.data())
-                    console.log('User to update: ', getUserId)
-                    // update newest data for user
-                    await updateDoc(userRef, {
-                        image: getUserId.image,
-                        email: getUserId.email,
-                        dateOfBirth: getUserId.dateOfBirth,
-                        chatRoomIds: [],
-                        phone: (getUserId.phone || getUserId.phone === null) ? getUserId.phone : user.data().phone,
-                        username: getUserId.username,
-                        lastSeen: serverTimestamp(),
-                        fullName: getUserId.fullName,
-                        roleId: (getUserId.roleId || getUserId.roleId === null) ? getUserId.roleId : user.data().roleId,
-                    })
-                }
-                // re-fetch user after upd
-                const usr = await getDoc(userRef)
-                if (usr.exists()) {
-                    console.log("Existed user:--", usr.data());
-                    setChatter(usr.data());
-                    return usr.data();
-                }
-                return undefined;
-            }
-            // User not found -> create new user with mapped id to SQL DB
-            await setDoc(doc(firestore, "users", getUserId.userId), {
-                image: getUserId.image,
-                email: getUserId.email,
-                userId: getUserId?.userId,
-                gender: getUserId.gender,
-                dateOfBirth: getUserId.dateOfBirth,
-                phone: getUserId.phone,
-                roleId: getUserId.roleId,
-                friendIds: [],
-                chatRoomIds: [],
-                username: getUserId.username,
-                fullName: getUserId.fullName,
-                createOnFirebaseAt: serverTimestamp(),
-            });
-            const newUser = await getDoc(userRef)
-            if (newUser.exists()) {
-                console.log("data:--" + newUser.data());
-                setChatter(newUser.data());
-                return newUser.data();
-            }
-            return undefined;
-        }
 
-        async function getUserRooms() {
+
+        async function loadUserRooms(userId) {
+            if (!userId) {
+                return;
+            }
+
+            const ct = await getUserInfo(getUserId?.userId)
+            setChatter(ct);
+            console.log('ct:', ct);
+
             //get all room first
-            const allUserRooms = await getDocs(allUserRoomsRef);
+            const allRoomsRef = query(chatRoomsRef,
+                where('memberIds', 'array-contains', userId),
+                orderBy('lastSeen', 'asc'));
+            const allUserRooms = await getDocs(allRoomsRef);
             let currentRoom = undefined;
             //if have room
-            if (!allUserRooms.empty) {
-                const listData = allUserRooms.docs.map(room => ({
+            if (allUserRooms.empty) {
+                if (id) {
+                    // const existUser = await getDoc(doc(firestore, 'users', id));
+                    const existUser = getUserInfo(id);
+                    if (existUser) {
+                        // create new PM Room ID for this user to the url userId
+                        const createdRoomId = await newPmRoom(existUser, 'pm')
+                        if (createdRoomId) {
+                            const newRoom = await getDoc(doc(firestore, 'chatRooms', createdRoomId))
+                            if (newRoom.exists()) {
+                                const cookedRoom = {
+                                    ...createdRoomId.data(),
+                                    id: createdRoomId.id,
+                                    pmUserId: existUser.userId,
+                                    image: existUser.image,
+                                    roomName: existUser.fullName,
+                                    dateOfBirth: existUser.dateOfBirth,
+                                    email: existUser.email,
+                                }
+                                setUserRooms([cookedRoom]);
+                                setUpCurrentRoom(cookedRoom);
+                                return;
+                            }
+                        }
+                    } else {
+                        setNoRoom(true);
+                        return;
+                    }
+                }
+
+            }
+
+
+            // cook listData cho phu hop voi user dang login
+            const listData = allUserRooms.docs.map(room => {
+                if (room.data().type === 'pm') {
+                    const theOther = theOtherChatter(room.data().members, getUserId?.userId);
+                    if (theOther) {
+                        const roomName = theOther?.fullName;
+                        const dateOfBirth = theOther?.dateOfBirth;
+                        const email = theOther?.email;
+
+                        return {
+                            ...room.data(),
+                            id: room.id,
+                            pmUserId: theOther.userId,
+                            image: theOther.image,
+                            roomName: roomName,
+                            dateOfBirth: dateOfBirth,
+                            email: email,
+                        }
+                    }
+                }
+                if (room.data().type === 'gr') {
+                    return {
+                        ...room.data(),
+                        isGroup: true,
+                        id: room.id
+                    }
+                }
+                if (room.data().type === 'self') {
+                    return {
+                        ...room.data(),
+                        id: room.id,
+                        roomName: getUserId?.fullName,
+                        dateOfBirth: getUserId?.dateOfBirth,
+                        email: getUserId?.email,
+                    }
+                }
+                return {
                     ...room.data(),
                     id: room.id
-                }));
-                //set usr rooms
-                setUserRooms(listData);
-                // get grs and frs and get current Room case 
-                const groups = [];
-                const friends = [];
-                if (id) {
-                    listData.forEach(room => {
-                        //case id is roomId
-                        if (room.id === id) {
-                            currentRoom = room;
-                            if (room.type && room.type === 'pm') {
-                                const members = room.members;
-                                if (members instanceof Array) {
-                                    members.map(mem => {
-                                        if (mem.userId !== getUserId.userId) {
-                                            setUserPm(mem);
-                                        }
-                                    })
+                }
+            });
 
-                                }
-                            }
-                        }
-                        //case id is userId of a exiting pm room
-                        if (room.type && room.type === 'pm') {
-                            const members = room.memberIds;
-                            if (members instanceof Array && members.includes(getUserId?.userId) && members.includes(id)) {
-                                currentRoom = room;
-                                setUserPm(room.pmUser);
-                            }
-                        }
-                        if (room.isGroup) {
-                            groups.push(room);
-                        } else {
-                            friends.push(room);
-                        }
-                    })
-
-                    if (id === 'default') {
-                        currentRoom = listData[0];
-                        setUserPm(currentRoom.pmUser);
-                    }
-
-                    // case id is a 'new userId'
-                    if (!currentRoom) {
-                        // chk if id is a userId
-                        const existUser = await getDoc(doc(firestore, 'users', id));
-                        if (existUser.exists()) {
-                            // create new PM Room ID for this user to the url userId
-                            const createdRoomId = await newPmRoom(id, 'pm')
-                            if (createdRoomId) {
-                                const newRoom = await getDoc(doc(firestore, 'chatRooms', createdRoomId))
-                                if (newRoom.exists()) {
-                                    console.log('urlId is new userId - New PM room created: ', newRoom.data());
-                                    currentRoom = { ...newRoom.data(), id: newRoom.id };
-                                    setUserPm(existUser.data());
-                                }
-                            }
-                        } else {
-                            // case id is not userId or roomId or wtf anything
-                            // => set default room (latest room)
-                            currentRoom = listData[0];
-                        }
-
-                    } else {
-                        // get userPm
-                        const userRef = doc(firestore, "users", id);
-                        const user = await getDoc(userRef);
-                        if (user.exists()) {
-                            setUserPm(user.data());
-                        }
+            const inboxUser = await getUserInfo(id);
+            if (inboxUser && !listData.find(room => room.pmUserId === inboxUser.userId)) {
+                const newIbRoomId = await newPmRoom(inboxUser, 'pm');
+                if (newIbRoomId) {
+                    const newIbRoom = await getDoc(doc(firestore, 'chatRooms', newIbRoomId))
+                    if (newIbRoom.exists()) {
+                        listData.push({
+                            ...newIbRoom.data(),
+                            id: newIbRoom.id,
+                            pmUserId: inboxUser.userId,
+                            image: inboxUser.image,
+                            roomName: inboxUser.fullName,
+                            dateOfBirth: inboxUser.dateOfBirth,
+                            email: inboxUser.email,
+                        })
+                        setUserRooms(listData);
+                        setUpCurrentRoom({
+                            ...newIbRoom.data(),
+                            id: newIbRoom.id,
+                            pmUserId: inboxUser.userId,
+                            image: inboxUser.image,
+                            roomName: inboxUser.fullName,
+                            dateOfBirth: inboxUser.dateOfBirth,
+                            email: inboxUser.email,
+                        });
+                        return;
                     }
                 }
-                setUserFriends(friends);
-                setUserGroups(groups);
-                console.log(' ====> Current room ', currentRoom)
-
-            } else {
-                //no any chat room
-                // check if url id is a userId
-                const existUser = await getDoc(doc(firestore, 'users', id));
-                if (existUser.exists()) {
-                    // create new PM Room ID for this user to the url userId
-                    const createdRoomId = await newPmRoom(id, 'pm')
-
-                    if (createdRoomId) {
-                        const newRoomRef = await doc(firestore, 'chatRooms', createdRoomId)
-                        const newRoom = await getDoc(newRoomRef)
-                        if (newRoom.exists()) {
-                            console.log('urlId is new userId - New PM room created: ', newRoom.data());
-                            setUserRooms({ ...newRoom.data(), id: newRoom.id })
-                            currentRoom = { ...newRoom.data(), id: newRoom.id };
-                            setUserPm(existUser.data());
-                            // return [{ ...newRoom.data(), id: newRoom.id }];
-                        }
-                    }
-                }
-                //no any room
-                setNoRoom(true);
             }
-            setCurrentRoom(currentRoom);
-            // Track messages
-            const unTrackRoom = onSnapshot(query(messagesRef,
-                // where('roomId', 'in', currentRoom.id),
-                orderBy('timestamp', 'asc')), (snapshot) => {
-                    snapshot.docChanges().forEach((change) => {
-                        if (change.type === "added") {
-                            playNotificationSound();
-                            // console.log("New message: ", change.doc.data());
-                        }
-                        if (change.type === "modified") {
-                            console.log("Modified massage: ", change.doc.data());
-                        }
-                        if (change.type === "removed") {
-                            console.log("Removed message: ", change.doc.data());
-                        }
-                    })
-                    const data = snapshot.docs.map(doc => ({
-                        ...doc.data(),
-                        id: doc.id
-                    })).filter(message => message.roomId === currentRoom?.id);
-                    console.log('Chat room message:', data);
-                    setUserMsgs(data);
-                });
+
+
+            setUserRooms(listData);
+
+            // load default room
+            if (id && id !== 'default') {
+                const roomById = listData.find(room => room.id === id);
+                if (roomById) {
+                    setUpCurrentRoom(roomById);
+                }
+                const roomByPmUserId = listData.find(room => room.pmUserId === id)
+                if (roomByPmUserId) {
+                    setUpCurrentRoom(roomByPmUserId);
+                }
+            }
+            setUpCurrentRoom(listData[0]);
         }
 
         // === Flow here
         console.log('getUserId: ', getUserId);
+        loadUserRooms(getUserId?.userId);
 
-        const ct = getChatter(getUserId?.userId)
-        setChatter(ct);
-
-        getUserRooms();
+        const allUserRoomsRef = query(chatRoomsRef,
+            where('memberIds', 'array-contains', getUserId?.userId),
+            orderBy('lastSeen', 'asc'));
         const unSubUserRooms = onSnapshot(allUserRoomsRef, (snapshot) => {
-            const data = snapshot.docs.map(doc => ({
-                ...doc.data(),
-                id: doc.id
-            }));
+            const data = snapshot.docs.map(room => {
+                if (room.data().type === 'pm') {
+                    const theOther = theOtherChatter(room.data().members, getUserId?.userId);
+                    if (theOther) {
+                        const roomName = theOther?.fullName;
+                        const dateOfBirth = theOther?.dateOfBirth;
+                        const email = theOther?.email;
+
+                        return {
+                            ...room.data(),
+                            id: room.id,
+                            pmUserId: theOther.userId,
+                            image: theOther.image,
+                            roomName: roomName,
+                            dateOfBirth: dateOfBirth,
+                            email: email,
+                        }
+                    }
+                }
+                if (room.data().type === 'gr') {
+                    return {
+                        ...room.data(),
+                        isGroup: true,
+                        id: room.id
+                    }
+                }
+                if (room.data().type === 'self') {
+                    return {
+                        ...room.data(),
+                        id: room.id,
+                        roomName: getUserId?.fullName,
+                        dateOfBirth: getUserId?.dateOfBirth,
+                        email: getUserId?.email,
+                    }
+                }
+                return {
+                    ...room.data(),
+                    id: room.id
+                }
+            });
             setUserRooms(data);
         });
-
-
     }, [])
+
+    useEffect(() => {
+        console.log('Current chat Room: ', currentRoom);
+        // setUserPm();
+        const unTrackRoom = onSnapshot(query(messagesRef,
+            // where('roomId', 'in', currentRoom.id),
+            orderBy('timestamp', 'asc')), (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        // playNotificationSound();
+                        // console.log("New message: ", change.doc.data());
+                    }
+                    if (change.type === "modified") {
+                        console.log("Modified massage: ", change.doc.data());
+                    }
+                    if (change.type === "removed") {
+                        console.log("Removed message: ", change.doc.data());
+                    }
+                })
+                const data = snapshot.docs.map(doc => ({
+                    ...doc.data(),
+                    id: doc.id
+                })).filter(message => message.roomId === currentRoom?.id);
+                console.log('Chat room message:', data);
+                setUserMsgs(data);
+            });
+    }, [currentRoom])
 
     const handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -369,12 +434,12 @@ export default function Message(props) {
                 type: "pm",
                 content: (userMsgs.length === 0 && (!formData.message || formData.message === '')) ? 'Hi! ✌️' : formData.message,
                 roomId: currentRoom?.id,
-                username: chatter?.username,
+                username: getUserId?.username,
                 userId: getUserId?.userId,
-                user: chatter,
+                user: getUserId,
                 timestamp: serverTimestamp(),
             });
-            // playNotificationSound();
+            playNotificationSound();
             setFormData({ message: '' })
             console.log("Document written with ID: ", message.id);
 
@@ -440,7 +505,7 @@ export default function Message(props) {
                                                         ) : (userGroups.map((gr, index) => {
                                                             // const isLastMessage = index === userMsgs.length - 1;
                                                             return (
-                                                                <div className="useravatar">
+                                                                <div className={gr?.id === currentRoom?.id ? 'useravatar active' : 'useravatar'} onClick={() => setUpCurrentRoom(gr)}>
                                                                     <img
                                                                         style={{ backgroundColor: 'white', width: 35, height: 35, objectFit: 'hidden', borderRadius: '100%' }}
                                                                         src={gr?.image === 'none' ? "../images/default-avt.png" : gr.image} alt />
@@ -475,16 +540,13 @@ export default function Message(props) {
                                                             <p style={{ textAlign: 'center' }}>No firends</p>
                                                         ) : (userFriends.map((fr, index) => {
                                                             return (
-                                                                <div className="useravatar" onClick={() => setCurrentRoom(fr)}>
-                                                                    {/* <a href={'/message/' + fr?.pmUserId}> */}
+                                                                <div className={fr?.id === currentRoom?.id ? 'useravatar active' : 'useravatar'} onClick={() => setUpCurrentRoom(fr)}>
                                                                     <img
                                                                         style={{ backgroundColor: 'white', width: 35, height: 35, objectFit: 'hidden', borderRadius: '100%' }}
                                                                         src={fr?.image === 'none' ? "../images/default-avt.png" : fr.image} alt />
-                                                                    {/* </a> */}
-                                                                    <span>{fr?.roomName}</span>
+                                                                    <span>{fr.roomName}</span>
 
                                                                     <div className={isActive(fr?.lastSeen) ? 'status online' : 'status offline'} />
-                                                                    {/* away */}
                                                                 </div>
                                                             )
                                                         }))
@@ -529,7 +591,7 @@ export default function Message(props) {
                                                                                 ) : (
                                                                                     <figure style={{ display: 'flex', flexDirection: 'column-reverse' }}><img
                                                                                         style={{ backgroundColor: 'white', width: 30, height: 30, objectFit: 'hidden', borderRadius: '100%' }}
-                                                                                        alt={'Avatar'} src={userPm?.image === 'none' ? "../images/default-avt.png" : userPm?.image} /></figure>
+                                                                                        alt={'Avatar'} src={currentRoom?.image === 'none' ? "../images/default-avt.png" : currentRoom?.image} /></figure>
                                                                                 )
                                                                             }
                                                                             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: getUserId?.userId === msg?.userId ? 'flex-end' : 'flex-start' }}>
@@ -602,8 +664,8 @@ export default function Message(props) {
                                         <div className="profile-short">
                                             <div className="chating-head" style={{ backgroundColor: '#ddebf3', marginBottom: 10 }}>
                                                 <div className="s-left">
-                                                    <h5>{currentRoom?.isGroup ? currentRoom?.roomName : userPm?.fullName}</h5>
-                                                    <p>Bạn bè</p>
+                                                    <h5>{currentRoom?.roomName}</h5>
+                                                    <p>{currentRoom?.type === 'gr' ? 'Nhóm' : 'Bạn bè'}</p>
                                                 </div>
                                             </div>
                                             <div className="short-intro">
@@ -627,15 +689,15 @@ export default function Message(props) {
                                                     <ul>
                                                         <li>
                                                             <span>Tên</span>
-                                                            <p>{userPm?.fullName === 'none' ? '- - -' : userPm?.fullName}</p>
+                                                            <p>{currentRoom?.roomName === 'none' ? '- - -' : currentRoom?.roomName}</p>
                                                         </li>
                                                         <li>
                                                             <span>Ngày sinh</span>
-                                                            <p>{userPm?.dateOfBirth === 'none' ? '- - -' : userPm?.dateOfBirth}</p>
+                                                            <p>{currentRoom?.dateOfBirth === 'none' ? '- - -' : currentRoom?.dateOfBirth}</p>
                                                         </li>
                                                         <li>
                                                             <span>Email</span>
-                                                            <p>{userPm?.email === 'none' ? '- - -' : userPm?.email}</p>
+                                                            <p>{currentRoom?.email === 'none' ? '- - -' : currentRoom?.email}</p>
                                                         </li>
                                                     </ul>
                                                 )}
