@@ -38,7 +38,7 @@ import Search from './pages/Search/Search';
 import Profile1 from './pages/Profile/Profile1';
 export const history = createBrowserHistory()
 
-function App () {
+function App() {
   return (
     <Router history={history}>
       <Switch>

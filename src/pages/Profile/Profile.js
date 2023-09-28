@@ -64,7 +64,7 @@ export default function Profile(props) {
     // };
     // dispatch(loading1);
   }, []);
-  
+
   return (
     <div>
       {/* {loading ? <Loading /> : <Fragment></Fragment>} */}
@@ -95,13 +95,30 @@ export default function Profile(props) {
                             />
                           )}
                           {getUserId?.userId === userID ? (
-                            <div></div>
+                            <></>
                           ) : (
-                            <div className="follow">
-                              <i className="icofont-check-circled" />
-                              Thích
-                            </div>
+                            <NavLink
+                              // className="mesg-notif"
+                              style={{
+                                borderRadius: '5px',
+                                background: '#218dcd',
+                                color: 'white',
+                                height: '33px',
+                                marginRight: '2rem',
+                              }}
+                              to={`/message/${getUserId?.userId}`}
+                            >
+                              {/* <div className="follow" style={{
+                                borderRadius: '5px',
+                                background: '#218dcd',
+                                color: 'white',
+                                height: '33px',
+                              }}> */}
+                              Gửi tin nhắn
+                              {/* </div> */}
+                            </NavLink>
                           )}
+
                           <figure className="group-dp">
                             {" "}
                             {getUserId?.image === "none" ? (
@@ -258,7 +275,7 @@ export default function Profile(props) {
                                     </div>
                                   </div>
                                   <div className="col-lg-4">
-                                  <YourFanpage2 />
+                                    <YourFanpage2 />
                                   </div>
                                 </div>
                               </div>
@@ -349,17 +366,17 @@ export default function Profile(props) {
               </div>
             </div>
             <div>
-              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr'}}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr' }}>
                 {getUserId?.followFanpage?.map((item, index) => {
                   return (
                     <div >
-                      <div style={{margin:'0 auto'}}>
-                      <img
-                        src={item?.fanpage?.avatar}
-                       style={{width:'80px', height:'80px' }}
-                      />
+                      <div style={{ margin: '0 auto' }}>
+                        <img
+                          src={item?.fanpage?.avatar}
+                          style={{ width: '80px', height: '80px' }}
+                        />
                       </div>
-                      <NavLink to={`/fanpage/${item?.fanpage?.fanpageId}`} style={{fontWeight:800 }}>{item?.fanpage?.fanpageName}</NavLink >
+                      <NavLink to={`/fanpage/${item?.fanpage?.fanpageId}`} style={{ fontWeight: 800 }}>{item?.fanpage?.fanpageName}</NavLink >
                     </div>
                   );
                 })}
