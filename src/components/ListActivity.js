@@ -14,9 +14,7 @@ export default function ListActivity(props) {
         </div>
       ) : (
         <div>
-          {arrActivity
-            ?.filter((item) => item.status === "Active")
-            .map((item, index) => {
+          {arrActivity?.filter((item) => item.status === "Active").map((item, index) => {
               const detailItem = item;
               let isAlreadyLiked = false;
               let isAlreadyJoined = false;
