@@ -58,10 +58,10 @@ export default function Profile1(props) {
     dispatch(action1);
     const action4 = GetListReportTypeAction();
     dispatch(action4);
-//  const loading1 = {
-//       type: "HIDE_LOADING",
-//     };
-//     dispatch(loading1);
+    //  const loading1 = {
+    //       type: "HIDE_LOADING",
+    //     };
+    //     dispatch(loading1);
   }, []);
   return (
     <div>
@@ -92,14 +92,32 @@ export default function Profile1(props) {
                               alt
                             />
                           )}
+
                           {getUserId1?.userId === userID ? (
-                            <div></div>
+                            <></>
                           ) : (
-                            <div className="follow">
-                              <i className="icofont-check-circled" />
-                              Thích
-                            </div>
+                            <NavLink
+                              // className="mesg-notif"
+                              style={{
+                                borderRadius: '5px',
+                                background: '#218dcd',
+                                color: 'white',
+                                height: '33px',
+                                marginRight: '2rem',
+                              }}
+                              to={`/message/${getUserId1?.userId}`}
+                            >
+                              {/* <div className="follow" style={{
+                                borderRadius: '5px',
+                                background: '#218dcd',
+                                color: 'white',
+                                height: '33px',
+                              }}> */}
+                              Gửi tin nhắn
+                              {/* </div> */}
+                            </NavLink>
                           )}
+
                           <figure className="group-dp">
                             {" "}
                             {getUserId1?.image === "none" ? (
@@ -345,17 +363,17 @@ export default function Profile1(props) {
               </div>
             </div>
             <div>
-              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr'}}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr' }}>
                 {getUserId1?.followFanpage?.map((item, index) => {
                   return (
                     <div >
-                      <div style={{margin:'0 auto'}}>
-                      <img
-                        src={item?.fanpage?.avatar}
-                       style={{width:'80px', height:'80px' }}
-                      />
+                      <div style={{ margin: '0 auto' }}>
+                        <img
+                          src={item?.fanpage?.avatar}
+                          style={{ width: '80px', height: '80px' }}
+                        />
                       </div>
-                      <NavLink to={`/fanpage/${item?.fanpage?.fanpageId}`} style={{fontWeight:800 }}>{item?.fanpage?.fanpageName}</NavLink >
+                      <NavLink to={`/fanpage/${item?.fanpage?.fanpageId}`} style={{ fontWeight: 800 }}>{item?.fanpage?.fanpageName}</NavLink >
                     </div>
                   );
                 })}

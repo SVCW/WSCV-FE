@@ -1,4 +1,4 @@
-import { http } from "../../utils/reponse";
+import { baseURL, http } from "../../utils/reponse";
 
 export const GetUserByIdAction = (id) => {
   return async (dispatch) => {
@@ -79,14 +79,46 @@ export const BanUserAction = (value) => {
 };
 
 export const UnBanUserAction = (value) => {
-    return async (dispatch) => {
-      try {
-        let result = await http.put(`/User/un-ban-user?userId=${value}`);
-        console.log(result);
-        const action = GetListUserAction();
-        dispatch(action);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  return async (dispatch) => {
+    try {
+      let result = await http.put(`/User/un-ban-user?userId=${value}`);
+      console.log(result);
+      const action = GetListUserAction();
+      dispatch(action);
+    } catch (error) {
+      console.log(error);
+    }
   };
+};
+
+export async function getListOfUsers(userIds) {
+  if (!(userIds instanceof Array)) {
+    return undefined;
+  }
+  const apiUrl = `${baseURL}/User/get-list-user`;
+  const requestBody = userIds;
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'accept': '*/*',
+        'Content-Type': 'application/json-patch+json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const dataBody = await response.json();
+    // Handle the data here
+
+    return dataBody.data;
+  } catch (error) {
+    // Handle any errors here
+    console.log('Error:', error);
+    return [];
+  }
+}

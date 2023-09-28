@@ -39,11 +39,11 @@ export default function Header(props) {
         props.history.push(`/search/${formik.values.search}`)
         // const action = await GetActivityTitleAction(value, props);
         // dispatch(action);
-   
+
       } else {
-        const action =await GetListActivityAction();
+        const action = await GetListActivityAction();
         dispatch(action);
-        localStorage.setItem('find','')
+        localStorage.setItem('find', '')
       }
     },
   });
@@ -143,7 +143,7 @@ export default function Header(props) {
           <li>
             <NavLink
               className="mesg-notif"
-              to="/message"
+              to="/message/default"
               title="Tin Nhắn"
               data-toggle="tooltip"
             >
