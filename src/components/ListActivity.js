@@ -5,7 +5,7 @@ import ItemActivity from "./ItemActivity";
 export default function ListActivity(props) {
   let { arrActivity, getUserId } = props;
   const { userID } = useSelector((root) => root.LoginReducer);
-
+console.log(arrActivity)
   return (
     <div>
       {arrActivity?.length === 0 ? (
@@ -14,7 +14,7 @@ export default function ListActivity(props) {
         </div>
       ) : (
         <div>
-          {arrActivity?.filter((item) => item.status === "Active")?.map((item, index) => {
+          { arrActivity?.length!==0 && arrActivity?.filter((item) => item.status === "Active")?.map((item, index) => {
               const detailItem = item;
               let isAlreadyLiked = false;
               let isAlreadyJoined = false;

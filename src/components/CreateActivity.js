@@ -21,7 +21,7 @@ export default function CreateActivity() {
   const [isOpen1, setIsOpen1] = useState(false);
   const [isDisplay, setIsDisplay] = useState(true);
   const [images, setImages] = useState([]);
-  const [coords, setCoords] = useState([]);
+  const [coords, setCoords] = useState([{}]);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [files, setFiles] = useState("");
@@ -595,7 +595,7 @@ export default function CreateActivity() {
                         placeholder="Nhập tên chiến dịch"
                         className="form-control"
                       />
-                      <div className="error">{formik.errors.title}</div>
+                      <div className="error">{formik.touched.title && formik.errors.title}</div>
                     </div>
                   </div>
                 </div>
@@ -615,7 +615,7 @@ export default function CreateActivity() {
                         value={formik.values.description}
                       ></textarea>
 
-                      <div className="error">{formik.errors.description}</div>
+                      <div className="error">{formik.touched.description && formik.errors.description}</div>
                     </div>
                   </div>
                 </div>
@@ -637,7 +637,7 @@ export default function CreateActivity() {
                         min={new Date().toISOString().split("T")[0]}
                         max={moment(formik.values.endDate).format("YYYY-MM-DD")}
                       />
-                      <div className="error">{formik.errors.startDate}</div>
+                      <div className="error">{formik.touched.startDate && formik.errors.startDate}</div>
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -658,7 +658,7 @@ export default function CreateActivity() {
                           ) && new Date().toISOString().split("T")[0]
                         }
                       />
-                      <div className="error">{formik.errors.endDate}</div>
+                      <div className="error">{formik.touched.endDate && formik.errors.endDate}</div>
                     </div>
                   </div>
                 </div>
@@ -678,7 +678,7 @@ export default function CreateActivity() {
                         onChange={formik.handleChange}
                         value={formik.values.location}
                       ></textarea>
-                      <div className="error">{formik.errors.location}</div>
+                      <div className="error">{formik.touched.location && formik.errors.location}</div>
                       {/* <input
                         type="text"
                         name="location"
@@ -766,7 +766,7 @@ export default function CreateActivity() {
                             </label>
                             <div className="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0" />
                           </fieldset>
-                          <div className="error">{formik.errors.media}</div>
+                          <div className="error">{formik.touched.media && formik.errors.media}</div>
                         </form>
                         <svg style={{ display: "none" }}>
                           <defs>
@@ -1138,7 +1138,7 @@ export default function CreateActivity() {
                               <div style={{ height: "200px", width: "100%" }}>
                                 <GoogleMapReact
                                   bootstrapURLKeys={{
-                                    key: "AIzaSyBEg-cDilr_ZSqVWMdXNVm4Wn9mo-KOKOI",
+                                    key: "AIzaSyCqUW1koIvv-Wjs3LnuAC_dn6RuewXDmOs",
                                   }}
                                   defaultCenter={coords}
                                   center={coords}

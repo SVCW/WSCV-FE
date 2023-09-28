@@ -16443,12 +16443,12 @@ a.classic-btn:hover {
   margin-top: 10px;
   font-size: 15px;
   border: 2px solid #17a2b8;
-  padding: 4px 0;
+  padding: 2px 0;
   width: 50%;
   cursor: pointer;
   font-weight: 500;
   color: black;
-  border-radius: 7px;
+  border-radius: 10px;
 }
 
 .google-icon-g {

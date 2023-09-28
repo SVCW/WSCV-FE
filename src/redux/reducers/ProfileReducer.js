@@ -5,11 +5,11 @@ let user1 = {}
 let arr1 = []
 if (localStorage.getItem('getuserid')) {
     user = JSON.parse(localStorage.getItem('getuserid'))
-    arr = JSON.parse(localStorage.getItem('getuserid'))
+    arr = JSON.parse(localStorage.getItem('arrActivityUser'))
 }
 if (localStorage.getItem('getuserid1')) {
     user1 = JSON.parse(localStorage.getItem('getuserid1'))
-    arr1 = JSON.parse(localStorage.getItem('getuserid1'))
+    arr1 = JSON.parse(localStorage.getItem('arrActivityUser1'))
 }
 const stateDefault = {
     getUserId: user,

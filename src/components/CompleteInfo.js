@@ -30,15 +30,15 @@ export default function CompleteInfo () {
         </div>
       </div>
       <ul className="prof-complete">
-        {/* {userByStatis.phone === null ? ( */}
+        {userByStatis.phone === null ? (
           <li>
             <i className="icofont-plus-square" />{" "}
             <NavLink to={`/profile/${localStorage.getItem('userID')}#about`}>Cập nhật số điện thoại</NavLink>
             <em>10%</em>
           </li>
-        {/* ) : (
+         ) : (
           <div></div>
-        )} */}
+        )} 
         {userByStatis.fullName === "none" ? (
           <li>
             <i className="icofont-plus-square" />{" "}

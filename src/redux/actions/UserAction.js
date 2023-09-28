@@ -91,6 +91,23 @@ export const UnBanUserAction = (value) => {
   };
 };
 
+
+export const GetNotiUserAction = (value) => {
+  return async (dispatch) => {
+    try {
+      let result = await http.get(`/Notification/get-user-notis?userId=${value}`);
+     const action = {
+      type:"GET_NOTI",
+      arrNoti : result.data.data
+     }
+     dispatch(action)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+
 export async function getListOfUsers(userIds) {
   if (!(userIds instanceof Array)) {
     return undefined;

@@ -9,7 +9,8 @@ const stateDefault = {
     admin: ad,
     usertotal: "",
     userSchedule:[],
-    arrListUser:[]
+    arrListUser:[],
+    arrNoti:[]
 }
 
 
@@ -33,6 +34,10 @@ export const UserReducer = (state = stateDefault, action) => {
         }
         case 'GET_LIST_USER': {
             state.arrListUser = action.arrListUser;
+            return { ...state }
+        }
+        case 'GET_NOTI': {
+            state.arrNoti = action.arrNoti;
             return { ...state }
         }
         default: return state;

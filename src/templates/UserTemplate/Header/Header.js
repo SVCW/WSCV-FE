@@ -11,10 +11,29 @@ import {
 } from "../../../redux/actions/ActivityAction";
 import { async } from "q";
 import { history } from "../../../App";
+import { GetNotiUserAction } from "../../../redux/actions/UserAction";
+import moment from "moment";
+import { array } from "yup";
 
 export default function Header(props) {
   const { userID } = useSelector((root) => root.LoginReducer);
+  const { arrNoti } = useSelector((root) => root.UserReducer);
+  console.log(arrNoti);
 
+  const [noti, setNoti] = useState(arrNoti);
+  const [thongBao, setThongBao] = useState(false);
+  const handleClick = () => {
+    setThongBao((tb) => !tb);
+  };
+  const [showAllComments, setShowAllComments] = useState(false);
+
+
+  const handleShowAll = () => {
+    setShowAllComments(true);
+  };
+  const visibleComments = showAllComments
+  ? arrNoti
+  : arrNoti.slice(0, 2);
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const { getUserId, arrActivityUser } = useSelector(
@@ -25,25 +44,64 @@ export default function Header(props) {
   };
 
   useEffect(() => {
-    const action = GetProfileByIdAction(userID);
-    dispatch(action);
-  }, [userID]);
+    const fetchData = async () => {
+      const action = GetProfileByIdAction(userID);
+      await dispatch(action);
+
+      // Gọi hàm sau 2 giây
+      const intervalId = setInterval(() => {
+        yourFunction();
+      }, 2000);
+
+      // Xóa interval khi component unmount hoặc khi không còn cần thiết
+      return () => clearInterval(intervalId);
+      
+    };
+
+    fetchData();
+  }, [userID, dispatch]);
+  const yourFunction = () => {
+    const action1 = GetNotiUserAction(userID);
+    dispatch(action1);
+   
+  };
+
+  const DateTime = (item) => {
+    const currentTime = moment();
+    const inputTime = moment(item);
+    const duration = moment.duration(currentTime.diff(inputTime));
+    const hoursAgo = duration.asHours();
+    let timeAgoString = "";
+    if (hoursAgo < 1) {
+      const daysAgo = Math.floor(duration.asMinutes());
+      timeAgoString = `${daysAgo} Phút Trước`;
+    } else if (hoursAgo >= 24) {
+      const daysAgo = Math.floor(duration.asDays());
+      timeAgoString = `${daysAgo} ngày trước`;
+    } else if (hoursAgo > 48) {
+      const formattedDate = inputTime.format("DD/MM/YYYY HH:mm:ss");
+      timeAgoString = formattedDate;
+    } else {
+      const hoursAgo = Math.floor(duration.asHours());
+      timeAgoString = `${hoursAgo} giờ trước`;
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       search: "",
     },
 
     onSubmit: async (value) => {
-      console.log(formik.values.search)
+      console.log(formik.values.search);
       if (formik.values.search !== "") {
-        props.history.push(`/search/${formik.values.search}`)
+        props.history.push(`/search/${formik.values.search}`);
         // const action = await GetActivityTitleAction(value, props);
         // dispatch(action);
-
       } else {
         const action = await GetListActivityAction();
         dispatch(action);
-        localStorage.setItem('find', '')
+        localStorage.setItem("find", "");
       }
     },
   });
@@ -99,8 +157,8 @@ export default function Header(props) {
             <div className="user-dp">
               <NavLink to={`/profile/${localStorage.getItem("userID")}`} title>
                 <img
-                  alt=''
-                  sizes=''
+                  alt=""
+                  sizes=""
                   src={
                     getUserId?.image === "none"
                       ? "../images/avatar.jpg"
@@ -115,11 +173,7 @@ export default function Header(props) {
           </li>
 
           <li>
-            <NavLink
-              to="/home"
-              title="Trang Chủ"
-              data-toggle="tooltip"
-            >
+            <NavLink to="/home" title="Trang Chủ" data-toggle="tooltip">
               <i>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -166,7 +220,11 @@ export default function Header(props) {
             </NavLink>
             <span />
           </li>
-          <li>
+          <li
+            onClick={() => {
+              handleClick();
+            }}
+          >
             <a
               className="mesg-notif"
               href="#"
@@ -278,11 +336,59 @@ export default function Header(props) {
             </ul>
           </li>
           {/* Drop box header */}
-
         </ul>
         {/* Function buttons right */}
-
       </div>
+
+      {thongBao ? (
+        <div style={{ position: "absolute", right: "150px", top: "100px" }}>
+          <div
+            className="search-result-1"
+            style={{ display: "flex", width: "300px" }}
+          >
+            <div style={{ width: "15%" }}>
+              {/* <div>
+                        {item.image?.length === 0 ? (
+                          <img src="../images/avatar.jpg" />
+                        ) : (
+                          <img src={item.media?.[0]?.linkMedia} />
+                        )} */}
+              {/* </div> */}
+            </div>
+            <div style={{ width: "95%", marginLeft: "20px" }}>
+              {visibleComments?.map((item, index) => {
+                return (
+                  <div>
+                    <div style={{ fontSize: "18px", fontWeight: 700 }}>
+                      <NavLink
+                        to={`/detailactivity/${item?.activity?.activityId}`}
+                      >
+                        {item.title}
+                      </NavLink>
+                    </div>
+                    <div style={{ fontSize: "18px" }}>
+                      {moment(item.datetime).format("DD/MM/YYYY hh:mm A")}
+                    </div>
+                    <p> {DateTime(item.datetime)}</p>
+                    <hr />
+                  </div>
+                );
+              })}
+              {arrNoti.length > 2 && !showAllComments && (
+                    <div
+                      onClick={handleShowAll}
+                      className=""
+                      style={{ color: "rgb(8, 141, 205)", cursor: "pointer" }}
+                    >
+                      Xem thêm...
+                    </div>
+                  )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div></div>
+      )}
     </header>
   );
 }
