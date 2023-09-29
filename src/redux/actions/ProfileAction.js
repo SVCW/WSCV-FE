@@ -74,6 +74,8 @@ export const UpdateProfileById = (userInfo) => {
       dispatch(action1);
       const action2 = GetListActivityAction();
       dispatch(action2);
+      const action3 = GetProfileByIdAction(localStorage.getItem("userID"));
+      dispatch(action3)
     } catch (error) {
       console.log(error);
     }
