@@ -607,7 +607,7 @@ export default function DetailActivity(props) {
                       <div
                         className="share"
                         onClick={() => {
-                          const textToCopy = `https://svcw-studentsvolunteer.vercel.app/detailactivity/${activityById?.activityId}`;
+                          const textToCopy = `https://wscv-fe-wscv-fe.vercel.app/detailactivity/${activityById?.activityId}`;
 
                           const copyTextToClipboard = () => {
                             const textArea = document.createElement("textarea");
