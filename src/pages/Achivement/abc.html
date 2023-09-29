@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Chúc Mừng! Tạo Tổ Chức Mới Thành Công trên SVCW</title>
+    <title>Chúc Mừng! Tham Gia Chiến Dịch Thành Công</title>
     <style>
         body {
             font-family: Arial, sans-serif
@@ -34,16 +34,20 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Chúc Mừng! Tạo Tổ Chức Mới Thành Công trên SVCW</h1>
+            <h1>Chúc Mừng! Tham Gia Chiến Dịch Thành Công</h1>
         </div>
         <div class="content">
-            <p>Xin chào #fullname,</p>
-            <p>Chúc mừng bạn đã tạo thành công tổ chức <span
-                    style="font-weight: bold;">${productItem.fanpageName}</span> trên SVCW!</p>
-            <p>Chúng tôi rất vui mừng vì bạn đã tham gia vào cộng đồng của chúng tôi. Tổ chức của bạn sẽ là nơi bạn có
-                thể chia sẻ thông tin, tương tác với cộng đồng và tạo những trải nghiệm thú vị cho người dùng.</p>
-            <p>Đừng ngần ngại bắt đầu đăng bài, chia sẻ thông tin và tạo nội dung thú vị trên tổ chức của bạn. Bạn có
-                thể truy cập vào tài khoản của mình để quản lý và tùy chỉnh tổ chức theo ý muốn.</p>
+            <p>Xin chào,</p>
+            <p>Bạn đã tham gia chiến dịch <span
+                    style="font-weight: bold;">${title}</span> trên SVCW!</p>
+            <p>Chúng tôi rất vui mừng vì bạn đã tham gia vào chiến dịch của chúng tôi. Vui lòng đến địa chỉ <span style="font-weight: bold;">${
+                location
+            }</span> từ ngày <span style="font-weight: bold;">${moment(startDate).format(
+                "DD/MM/YYYY hh:mm A"
+              )}</span> đến ngày <span style="font-weight: bold;">${moment(endDate).format(
+                "DD/MM/YYYY hh:mm A"
+              )}</span> để tham gia chiến dịch.</p>
+            <p>Khi đến vui lòng truy cập vào đường liên kết để điểm danh <a href="https://wscv-fe-wscv-fe.vercel.app/loginmobile">Student-Volunteer</a></p>
             <p>Nếu bạn gặp bất kỳ khó khăn hoặc có câu hỏi, đừng ngần ngại liên hệ với chúng tôi qua địa chỉ hỗ trợ.
                 Chúng tôi sẽ sẵn sàng giúp đỡ bạn.</p>
             <p>Chúc bạn có những trải nghiệm thú vị và thành công trong việc quản lý tổ chức của mình trên SVCW!</p>

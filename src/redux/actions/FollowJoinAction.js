@@ -138,14 +138,66 @@ export const JoinAction = (activity, user,title,location,startDate,endDate) => {
               });
               SendEmail(
                 localStorage.getItem("emailuser"),
-                "Thông báo thời gian diễn ra chiến dịch",
-                `Bạn đã tham gia thành công chiến dịch ${title} . Vui lòng đến địa chỉ ${
-                  location
-                } từ ngày ${moment(startDate).format(
-                  "DD/MM/YYYY hh:mm A"
-                )} đến ngày ${moment(endDate).format(
-                  "DD/MM/YYYY hh:mm A"
-                )} để tham gia chiến dịch`
+                "Thông báo thời gian địa điểm diễn ra chiến dịch",
+                `<!DOCTYPE html>
+                <html lang="vi">
+                
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width,initial-scale=1">
+                    <title>Chúc Mừng! Tham Gia Chiến Dịch Thành Công</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif
+                        }
+                
+                        .container {
+                            max-width: 600px;
+                            margin: 0 auto;
+                            padding: 20px;
+                            border: 1px solid #ccc;
+                            border-radius: 5px
+                        }
+                
+                        .header {
+                            background-color: #18dcff;
+                            color: #fff;
+                            text-align: center;
+                            padding: 10px
+                        }
+                
+                        .content {
+                            padding: 20px
+                        }
+                    </style>
+                </head>
+                
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>Chúc Mừng! Tham Gia Chiến Dịch Thành Công</h1>
+                        </div>
+                        <div class="content">
+                            <p>Xin chào,</p>
+                            <p>Bạn đã tham gia chiến dịch <span
+                                    style="font-weight: bold;">${title}</span> trên SVCW!</p>
+                            <p>Chúng tôi rất vui mừng vì bạn đã tham gia vào chiến dịch của chúng tôi. Vui lòng đến địa chỉ <span style="font-weight: bold;">${
+                                location
+                            }</span> từ ngày <span style="font-weight: bold;">${moment(startDate).format(
+                                "DD/MM/YYYY hh:mm A"
+                              )}</span> đến ngày <span style="font-weight: bold;">${moment(endDate).format(
+                                "DD/MM/YYYY hh:mm A"
+                              )}</span> để tham gia chiến dịch.</p>
+                            <p>Khi đến vui lòng truy cập vào đường liên kết để điểm danh: <a href="https://wscv-fe-wscv-fe.vercel.app/loginmobile">Student-Volunteer</a></p>
+                            <p>Nếu bạn gặp bất kỳ khó khăn hoặc có câu hỏi, đừng ngần ngại liên hệ với chúng tôi qua địa chỉ hỗ trợ.
+                                Chúng tôi sẽ sẵn sàng giúp đỡ bạn.</p>
+                            <p>Chúc bạn có những trải nghiệm thú vị và thành công trong việc quản lý tổ chức của mình trên SVCW!</p>
+                            <p>Trân trọng,<br>SVCW</p>
+                        </div>
+                    </div>
+                </body>
+                
+                </html>`
               );
         } catch (error) {
             console.log(error.response?.data.message);
