@@ -279,7 +279,7 @@ export default function Profile(props) {
                                 </div>
                               </div>
 
-                              <Albums arrActivity={getUserId?.activity} />
+                              <Albums arrActivity={arrActivityUser} />
                               <div className="tab-pane fade" id="about">
                                 <div className="row merged20">
                                   <div className="col-lg-12">
@@ -296,7 +296,7 @@ export default function Profile(props) {
                                 getUserId={getUserId}
                               />
                               <StopActivity
-                                arrEndActivityByUserID={getUserId?.activity}
+                                arrEndActivityByUserID={arrActivityUser}
                                 getUserId={getUserId}
                               />
                             </div>
