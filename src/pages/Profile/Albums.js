@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import moment from "moment";
+import { NavLink } from "react-router-dom/cjs/react-router-dom";
 
 // import DetailActivity from '../../component/DetailActivity';
 
@@ -40,9 +41,10 @@ const Albums = (props) => {
               <li>
                 <a title>
                   {album.media.length > 0 ? (
-                    <>
-                      <i className="icofont-plus" /> {album.media.length - 1}{" "}
-                    </>
+                    <NavLink to={`/detailactivity/${album.activityId}`}>
+                    {album.media.length > 1 ? <Fragment><i className="icofont-plus" /> {album.media.length }{" "}</Fragment> : <div></div>}
+                      
+                    </NavLink>
                   ) : null}
                 </a>
               </li>

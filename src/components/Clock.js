@@ -5,7 +5,7 @@ export default function Clock() {
       <img src="../images/time-clock.png" />
       <div
         className="bg-image"
-        style={{ backgroundImage: 'url("./images/giphy-sample.gif")' }}
+        style={{ backgroundImage: 'url("../images/dongHo.jpg")' }}
       />
       <div className="date-time">
         <div className="realtime">
