@@ -100,7 +100,7 @@ useEffect(()=>{
                   >
                     Chi tiết
                   </NavLink> */}
-                    {getUserId?.fanpage?.description.length >200 ? <div>{(getUserId?.fanpage?.description).slice(0,200)+ '...'}</div> :getUserId?.fanpage?.description}
+                    {getUserId?.fanpage?.description.length >50 ? <div>{(getUserId?.fanpage?.description).slice(0,50)+ '...'}</div> :getUserId?.fanpage?.description}
                 </div>
               </li>
             </ul>

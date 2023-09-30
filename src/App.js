@@ -36,6 +36,8 @@ import AdminStatistical1 from './pages/AdminStatistical/AdminStatistical1';
 import Detail from './Detail';
 import Search from './pages/Search/Search';
 import Profile1 from './pages/Profile/Profile1';
+import Success from './pages/HomeMobile/Success';
+import Error from './pages/HomeMobile/Error';
 export const history = createBrowserHistory()
 
 function App() {
@@ -73,6 +75,8 @@ function App() {
         <Route path="/detailactivity/:id" exact component={DetailActivity} />
         <Route exact path="/loginmobile" component={LoginMobile} />
         <Route exact path="/homemobile" component={HomeMobile} />
+        <Route exact path="/success" component={Success} />
+        <Route exact path="/error" component={Error} />
         <Route path="/" exact component={Login} />
       </Switch>
     </Router>

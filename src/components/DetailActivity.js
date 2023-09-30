@@ -477,7 +477,7 @@ export default function DetailActivity(props) {
                             ) {
                               if (pro?.isParticipant === true) {
                                 return (
-                                  <button
+                                  <button 
                                     className={` ${
                                       isAlreadyJoined === "Join"
                                         ? "btn-change"
@@ -571,7 +571,7 @@ export default function DetailActivity(props) {
                           {
                             //TODO
                           }
-                          {isAlreadyFollowed ? "Hủy theo dõi" : "Theo dõi"}
+                          {isAlreadyFollowed ? "Hủy theo dõi " : "Theo dõi"}
                         </button>
                       )}
                     </div>
