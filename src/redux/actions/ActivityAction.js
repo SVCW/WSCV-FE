@@ -4,6 +4,7 @@ import { GetFanpageByIDAction } from "./FanpageAction";
 import { GetProfile1ByIdAction, GetProfileByIdAction } from "./ProfileAction";
 import { SendEmail } from "../../utils/emailService";
 import { history } from "../../App";
+import axios from "axios";
 
 export const GetListActivityAction = () => {
   return async (dispatch) => {
@@ -120,14 +121,14 @@ export const CreateActivityAction = (value, setCreate) => {
       dispatch(action);
       const action5 = GetListEndActivityAction();
       dispatch(action5);
-      const action3 =await GetProfileByIdAction(localStorage.getItem('userID'));
+      const action3 = await GetProfileByIdAction(localStorage.getItem('userID'));
       dispatch(action3)
       localStorage.setItem("activityprocess", result.data.data.activityId);
       localStorage.setItem("activityprocessid", result.data.data.activityId);
       localStorage.setItem("startactivity", value.startDate);
       localStorage.setItem("endstart", value.endDate);
       setCreate(result.data.data.activityId);
-   
+
     } catch (error) {
       console.log(error);
     }
@@ -137,7 +138,7 @@ export const CreateActivityAction = (value, setCreate) => {
 export const GetActivityTitleAction = (value) => {
   return async (dispatch) => {
     try {
-     
+
       let result = await http.post(`/Activity/get-activity-title`, value);
       const action = {
         type: "GET_LIST_ACTIVITY_TITLE",
@@ -152,7 +153,7 @@ export const GetActivityTitleAction = (value) => {
       };
       // const action1 = RecommentActivityAction(search, search.userId);
       // dispatch(action1);
-      
+
     } catch (error) {
       console.log(error);
     }
@@ -202,19 +203,19 @@ export const PostLikeAction = (value) => {
   };
 };
 
-export const CheckinActivityAction = (value,props) => {
+export const CheckinActivityAction = (value, props) => {
   return async (dispatch) => {
     try {
       let result = await http.post(
         `/QR/check-in?userId=${value.userId}&activityId=${value.activityId}`
       );
       console.log(result);
- 
+
       props.history.push('/success');
       window.location.reload();
     } catch (error) {
       console.log(error?.response?.data?.message);
-      
+
       localStorage.setItem("errortitle", error?.response?.data?.message)
       props.history.push('/error')
       window.location.reload();
@@ -284,11 +285,11 @@ export const RefunActivityAction = (id) => {
   };
 };
 
-export const DeleteActivityAction = (value ,email, title, username) => {
+export const DeleteActivityAction = (value, email, title, username) => {
   return async (dispatch) => {
     try {
       let result = await http.delete(`/Activity/delete-activity?id=${value}`);
-      SendEmail(email, 'Bài viết của bãn đã bị xóa',   `<!DOCTYPE html>
+      SendEmail(email, 'Bài viết của bãn đã bị xóa', `<!DOCTYPE html>
       <html lang="vi">
       
       <head>
@@ -341,7 +342,7 @@ export const DeleteActivityAction = (value ,email, title, username) => {
       dispatch(action1);
       const action5 = GetListEndActivityAction();
       dispatch(action5);
-      
+
       // const action = RefunActivityAction(value);
       // dispatch(action);
     } catch (error) {
@@ -446,7 +447,7 @@ export const RecommentActivityAction = (value, id) => {
 export const GetActivitySreachAction = (value) => {
   return async (dispatch) => {
     try {
-     
+
       let result = await http.post(`/Activity/search`, value);
       console.log(result)
       const action = {
@@ -457,12 +458,12 @@ export const GetActivitySreachAction = (value) => {
         userId: localStorage.getItem('userID'),
         searchContent: value.search
       }
-      const action1 = RecommentActivityAction(search,localStorage.getItem('userID'));
+      const action1 = RecommentActivityAction(search, localStorage.getItem('userID'));
       dispatch(action1)
 
 
       console.log(result.data.data);
-      dispatch(action);     
+      dispatch(action);
     } catch (error) {
       console.log(error);
     }
@@ -478,7 +479,7 @@ export const ActiveActivityAction = (id, email, fullname, activityName) => {
       dispatch(action1);
       Swal.fire({
         title: "Thành công!",
-     text: `Duyệt chiến dịch ${activityName} thành công`,
+        text: `Duyệt chiến dịch ${activityName} thành công`,
         icon: "success",
         confirmButtonText: "Thành công",
       });
@@ -691,3 +692,22 @@ export const QuitActivityAction = (value) => {
     }
   };
 };
+export async function markNotificationAsRead(notiId) {
+  const apiUrl = `https://svcw-system.azurewebsites.net/api/Notification/mark-as-read?notiId=${notiId}`;
+
+  try {
+    const response = await axios.put(apiUrl, {
+      headers: {
+        Accept: '*/*',
+      },
+    });
+
+    if (response.status === 200) {
+      console.log('Notification marked as read successfully.');
+    } else {
+      console.error('Failed to mark notification as read.');
+    }
+  } catch (error) {
+    console.error('An error occurred:', error.message);
+  }
+}

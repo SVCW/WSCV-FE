@@ -8,12 +8,14 @@ import {
   GetActivityTitleAction,
   GetListActivityAction,
   RecommentActivityAction,
+  markNotificationAsRead,
 } from "../../../redux/actions/ActivityAction";
 import { async } from "q";
 import { history } from "../../../App";
 import { GetNotiUserAction } from "../../../redux/actions/UserAction";
 import moment from "moment";
 import { array } from "yup";
+import Swal from "sweetalert2";
 
 export default function Header(props) {
   const { userID } = useSelector((root) => root.LoginReducer);
@@ -32,9 +34,53 @@ export default function Header(props) {
   const handleShowAll = () => {
     setShowAllComments(true);
   };
+
+  const [lastArray, setLastArray] = useState([]);
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
+
+  // Toast.fire({
+  //   icon: "error",
+  //   title: `Bỏ theo dõi chiến dịch ${title} thành công `,
+  // });
+
+  useEffect(() => {
+    const differenceArray = arrNoti.filter(item1 => {
+      return !lastArray.some(item2 => item2.notificationId === item1.notificationId);
+    });
+
+    if (differenceArray instanceof Array && differenceArray.length > 0 && lastArray.length > 0) {
+      differenceArray.forEach((noti) => {
+        Toast.fire({
+          icon: "info",
+          title: `${noti?.title}`,
+        });
+      });
+
+    }
+
+    console.log('diff Array: ', differenceArray);
+    console.log('lastArray: ', lastArray);
+    console.log('diff arrNoti: ', arrNoti);
+    setLastArray(arrNoti)
+  }, [arrNoti]);
+
+
+
+
   const visibleComments = showAllComments
     ? arrNoti
-    : arrNoti.slice(0, 2);
+    : arrNoti.slice(0, 4);
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const { getUserId, arrActivityUser } = useSelector(
@@ -366,8 +412,7 @@ export default function Header(props) {
                     <div>
                       <div style={{ fontSize: "18px", fontWeight: 700 }}>
                         <NavLink
-                          to={`/detailactivity/${item?.activity?.activityId}`}
-                        >
+                          to={item.activityId ? `/profile/${localStorage.getItem('userID')}` : `/detailactivity/${item?.activity?.activityId}`}                        >
                           {item.title}
                         </NavLink>
                       </div>
@@ -395,6 +440,7 @@ export default function Header(props) {
           <div></div>
         )}
       </header>
+
       {/* noti side slide */}
       <div style={{
         position: 'absolute',
@@ -408,7 +454,7 @@ export default function Header(props) {
         <div className="slide-meta">
           <div className="tab-content">
             <div className="tab-pane active show fade" id="notifications">
-              <h4><i className="icofont-bell-alt" /> notifications</h4>
+              <h4><i className="icofont-bell-alt" /> Thông báo</h4>
               <ul className="notificationz" style={{
                 paddingTop: '0px',
                 marginBottom: '5px'
@@ -416,55 +462,48 @@ export default function Header(props) {
                 {visibleComments?.map((item, index) => {
                   return (
                     <NavLink
-                      to={item.activityId  ? `/profile/${localStorage.getItem('userID')}`: `/detailactivity/${item?.activity?.activityId}` }
+                      to={item?.activityId === null ? `/profile/${localStorage.getItem('userID')}` : `/detailactivity/${item?.activity?.activityId}`}
                     >
-                      <li style={{
-                        background: '#d6eefe',
-                        padding: '10px',
-                        display: 'flex',
-                        borderRadius: '4px',
-                        marginBottom: '5px'
-                      }}>
-                        <figure
+                      <>
+                        <li style={{
+                          background: item?.status ? '#d6eefe' : '',
+                          padding: '10px',
+                          display: 'flex',
+                          borderRadius: '4px',
+                          marginBottom: '5px'
+                        }}
+                          onClick={() => markNotificationAsRead(item?.notificationId)}
+                        >
+                          <figure>
+                            <i style={{
+                              marginTop: '1rem',
+                            }} className="icofont-bell-alt" />
+                          </figure>
+                          <div className="mesg-info" >
+                            <span>{item.title}</span>
+                            {/* <a href="#" title>recommend your post</a> */}
+                          </div>
+                        </li>
+                      </>
 
-                        ><i style={{
-                          marginTop: '1rem',
-                        }} className="icofont-bell-alt" /></figure>
-                        <div className="mesg-info" >
-                          <span>
-
-                            {item.title}
-
-                          </span>
-                          {/* <a href="#" title>recommend your post</a> */}
-
-                        </div>
-                      </li>
                     </NavLink>
                   )
                 })
-
-
-
-                  //     <div>
-                  //       <div style={{ fontSize: "18px", fontWeight: 700 }}>
-                  //         <NavLink
-                  //           to={`/detailactivity/${item?.activity?.activityId}`}
-                  //         >
-                  //           {item.title}
-                  //         </NavLink>
-                  //       </div>
-                  //       <div style={{ fontSize: "18px" }}>
-                  //         {moment(item.datetime).format("DD/MM/YYYY hh:mm A")}
-                  //       </div>
-                  //       <p> {DateTime(item.datetime)}</p>
-                  //       <hr />
-                  //     </div>
-                  //   );
                 }
 
               </ul>
-              <a href="#" title className="main-btn" data-ripple>view all</a>
+              {visibleComments?.length > 3 ? (
+                <a
+                  style={{
+                    borderRadius: '4px'
+                  }}
+                  onClick={() => setShowAllComments(!showAllComments)}
+                  title className="main-btn"
+                  data-ripple>{showAllComments ? 'Thu gọn' : 'Xem tất cả'}
+                </a>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </div >

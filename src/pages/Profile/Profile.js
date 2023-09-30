@@ -32,7 +32,7 @@ export default function Profile(props) {
   const dispatch = useDispatch();
   const [reloadPage, setReloadPage] = useState(false);
   const { userID } = useSelector((root) => root.LoginReducer);
-  const { getUserId,arrActivityUser } = useSelector((root) => root.ProfileReducer);
+  const { getUserId, arrActivityUser } = useSelector((root) => root.ProfileReducer);
   const { arrEndActivityByUserID } = useSelector(
     (root) => root.EndActivityReducer
   );
@@ -42,6 +42,13 @@ export default function Profile(props) {
     visibility: isOpen ? "visible" : "hidden",
     overflow: isOpen ? "auto" : "hidden",
   };
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth', // Use 'auto' if you don't want smooth scrolling
+    });
+  }
+
   const handleClickCreate = () => {
     setIsOpen((prevIsOpen) => !prevIsOpen);
   };
@@ -62,6 +69,7 @@ export default function Profile(props) {
     //   type: "HIDE_LOADING",
     // };
     // dispatch(loading1);
+    scrollToTop()
   }, []);
 
   return (
