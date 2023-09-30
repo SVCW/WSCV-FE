@@ -52,7 +52,7 @@ export default function Header(props) {
       // Gọi hàm sau 2 giây
       const intervalId = setInterval(() => {
         yourFunction();
-      }, 2000);
+      }, 10000);
 
       // Xóa interval khi component unmount hoặc khi không còn cần thiết
       return () => clearInterval(intervalId);

@@ -120,6 +120,7 @@ export default function QRScanner (props) {
   return (
     <div>
       <video ref={videoRef} autoPlay muted playsInline></video>
+      <div>Ket qua : {data}</div>
     </div>
   );
 }
