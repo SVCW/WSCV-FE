@@ -22,7 +22,7 @@ export default function Success() {
       <p>
         Chúc bạn có trải nghiệm tốt 
         <NavLink to="/loginmobile" className="button dark circle" href="#" title="">
-          Cảm ơn
+          Cảm ơn.
         </NavLink>
       </p>
     </div>

@@ -25,7 +25,7 @@ export default function CreateFanpage (props) {
         "Mã Số Thuế phải có độ dài 10 hoặc 13 kí tự",
         (value) => value.length === 10 || value.length === 13
       )
-      .required("Mã Số Thuế không được bỏ trống"),
+      .required("Mã số thuế không được bỏ trống"),
     email: Yup.string()
       .email("Địa chỉ email không hợp lệ")
       .required("Email không được bỏ trống"),
@@ -34,7 +34,7 @@ export default function CreateFanpage (props) {
       .min(10, "Số điện thoại phải có ít nhất 10 kí tự")
       .max(12, "Số điện thoại không vượt quá 12 kí tự")
       .required("Số điện thoại không được bỏ trống"),
-    description: Yup.string().required("Mô Tả không được bỏ trống"),
+    description: Yup.string().required("Mô tả không được bỏ trống"),
     avatar: Yup.string().required("Vui lòng tải lên ảnh đại diện"),
     coverImage: Yup.string().required("Vui lòng tải lên ảnh bìa"),
   });
@@ -46,7 +46,7 @@ export default function CreateFanpage (props) {
       coverImage: "",
       description: "",
       mst: "",
-      email: "",
+      email: localStorage.getItem('emailuser'),
       phone: "",
       userId: userID,
     },
@@ -172,6 +172,7 @@ console.log(value)
                             </div>
                             <div className="col-lg-12 col-md-12 col-sm-12 mb-4">
                               <input
+                                disabled
                                 className="uk-input"
                                 name="email"
                                 onChange={formik.handleChange}
