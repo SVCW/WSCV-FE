@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Timestamp, addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, setDoc, updateDoc, serverTimestamp, where, getDocs } from 'firebase/firestore';
+import { Timestamp, addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, updateDoc, serverTimestamp, where, getDocs } from 'firebase/firestore';
 import { firestore } from '../../firebase';
 import { useSelector } from 'react-redux';
 import { getListOfUsers } from '../../redux/actions/UserAction';
@@ -35,17 +35,22 @@ export default function Message(props) {
     // play noti sound
     const notificationSound = document.getElementById('newMessageSound');
     function playNotificationSound() {
-        // const notificationSound = document.getElementById('newMessageSound');
         if (notificationSound) {
             notificationSound.play();
         }
     }
+    // const scrollToBottom = () => {
+    //     if (lastChatRef.current) {
+    //         lastChatRef.current.scrollIntoView({ behavior: 'smooth' });
+    //     }
+    // };
+
     const scrollToBottom = () => {
-        if (lastChatRef.current) {
-            lastChatRef.current.scrollIntoView({ behavior: 'smooth' });
+        const chatArea = document.querySelector(".chatting-area");
+        if (chatArea) {
+            chatArea.scrollTop = chatArea.scrollHeight;
         }
     };
-
     useEffect(() => {
         scrollToBottom();
     }, [userMsgs]);
@@ -81,42 +86,78 @@ export default function Message(props) {
         }
     }
 
+    // function formatLastSeen(timestamp, lastMess) {
+    //     const str = lastMess ? 'Message' : 'Seen';
+    //     // Get the current date and time
+    //     const currentDate = new Date();
+    //     // Get the Firestore Timestamp as a Date object
+    //     if (timestamp instanceof Timestamp) {
+    //         const timestampDate = timestamp.toDate()
+    //         if (
+    //             currentDate.getDate() === timestampDate.getDate() &&
+    //             currentDate.getMonth() === timestampDate.getMonth() &&
+    //             currentDate.getFullYear() === timestampDate.getFullYear()
+    //         ) {
+    //             // Format as "Last Seen On Today At HH:mm"
+    //             const hours = timestampDate.getHours().toString().padStart(2, '0');
+    //             const minutes = timestampDate.getMinutes().toString().padStart(2, '0');
+    //             return `Last ${str} On Today At ${hours}:${minutes}`;
+    //         } else {
+    //             // Format as "Last Seen On DD Month YYYY At HH:mm"
+    //             const day = timestampDate.getDate().toString().padStart(2, '0');
+    //             const monthNames = [
+    //                 'January', 'February', 'March', 'April',
+    //                 'May', 'June', 'July', 'August',
+    //                 'September', 'October', 'November', 'December'
+    //             ];
+    //             const month = monthNames[timestampDate.getMonth()];
+    //             const year = timestampDate.getFullYear();
+    //             const hours = timestampDate.getHours().toString().padStart(2, '0');
+    //             const minutes = timestampDate.getMinutes().toString().padStart(2, '0');
+    //             return `Last ${str} On ${day} ${month} ${year} At ${hours}:${minutes}`;
+    //         }
+    //     }
+
+
+    //     // Check if the timestamp is from today
+
+    // }
+
     function formatLastSeen(timestamp, lastMess) {
-        const str = lastMess ? 'Message' : 'Seen';
-        // Get the current date and time
-        const currentDate = new Date();
         // Get the Firestore Timestamp as a Date object
         if (timestamp instanceof Timestamp) {
-            const timestampDate = timestamp.toDate()
+            const timestampDate = timestamp.toDate();
+            const currentDate = new Date();
+
+            const dayOfWeek = ["CN", "TH 2", "TH 3", "TH 4", "TH 5", "TH 6", "TH 7"];
+            const day = dayOfWeek[timestampDate.getDay()];
+            const hours = timestampDate.getHours().toString().padStart(2, '0');
+            const minutes = timestampDate.getMinutes().toString().padStart(2, '0');
+
             if (
                 currentDate.getDate() === timestampDate.getDate() &&
                 currentDate.getMonth() === timestampDate.getMonth() &&
                 currentDate.getFullYear() === timestampDate.getFullYear()
             ) {
-                // Format as "Last Seen On Today At HH:mm"
-                const hours = timestampDate.getHours().toString().padStart(2, '0');
-                const minutes = timestampDate.getMinutes().toString().padStart(2, '0');
-                return `Last ${str} On Today At ${hours}:${minutes}`;
+                // Nếu là cùng ngày
+                return `${hours}:${minutes}`;
             } else {
-                // Format as "Last Seen On DD Month YYYY At HH:mm"
+                // Nếu không phải cùng ngày
                 const day = timestampDate.getDate().toString().padStart(2, '0');
                 const monthNames = [
-                    'January', 'February', 'March', 'April',
-                    'May', 'June', 'July', 'August',
-                    'September', 'October', 'November', 'December'
+                    'THG 1', 'THG 2', 'THG 3', 'THG 4',
+                    'THG 5', 'THG 6', 'THG 7', 'THG 8',
+                    'THG 9', 'THG 10', 'THG 11', 'THG 12'
                 ];
                 const month = monthNames[timestampDate.getMonth()];
                 const year = timestampDate.getFullYear();
-                const hours = timestampDate.getHours().toString().padStart(2, '0');
-                const minutes = timestampDate.getMinutes().toString().padStart(2, '0');
-                return `Last ${str} On ${day} ${month} ${year} At ${hours}:${minutes}`;
+                return `${day} ${month} ${year} LÚC ${hours}:${minutes}`;
             }
         }
-
-
-        // Check if the timestamp is from today
-
+        // Nếu không phải Firestore Timestamp
+        return ''; // Trả về chuỗi rỗng hoặc thông báo lỗi tùy theo trường hợp
     }
+
 
     async function newPmRoom(pmUsr, type) {
         const currentUsr = await getUserInfo(getUserId?.userId);
@@ -147,8 +188,14 @@ export default function Message(props) {
             }
         }
         if (room.type === 'gr') {
-            // not yet
+            const listMemIds = room.memberIds;
+
+            if (listMemIds instanceof Array && listMemIds.length > 0) {
+                const listMems = await getListOfUsers(listMemIds);
+                if (listMems instanceof Array) room.members = listMems
+            }
         }
+        setNoRoom(false);
         setCurrentRoom(room);
     }
 
@@ -393,6 +440,7 @@ export default function Message(props) {
     }, [])
 
     useEffect(() => {
+        if (!currentRoom) return;
         console.log('Current chat Room: ', currentRoom);
         // setUserPm();
         const unTrackRoom = onSnapshot(query(messagesRef,
@@ -414,6 +462,16 @@ export default function Message(props) {
                     ...doc.data(),
                     id: doc.id
                 })).filter(message => message.roomId === currentRoom?.id);
+                // message image process
+                // if (currentRoom.type === 'gr') {
+                const members = currentRoom.members;
+                if (members instanceof Array && members.length > 0) {
+                    data.map(message => {
+                        message.user = members.find(mem => mem.userId === message.userId);
+                    })
+                }
+                // }
+
                 console.log('Chat room message:', data);
                 setUserMsgs(data);
             });
@@ -457,7 +515,7 @@ export default function Message(props) {
         try {
             const message = await addDoc(messagesRef, {
                 type: "pm",
-                content: (userMsgs.length === 0 && (!formData.message || formData.message === '')) ? 'Hi! ✌️' : formData.message,
+                content: (userMsgs.length === 0 && (!formData.message || formData.message === '')) ? 'Xin chào! 🖐️' : formData.message,
                 roomId: currentRoom?.id,
                 username: getUserId?.username,
                 userId: getUserId?.userId,
@@ -472,7 +530,7 @@ export default function Message(props) {
                 lastSeen: serverTimestamp()
             })
         } catch (e) {
-            alert('It seem like you have no any chat room.\nLet add new friend and staring a chat!')
+            alert('It look like you have no any chat room.\nLet find a Volunteer and staring a chat!')
             console.error("Error adding document: ", e);
         }
     }
@@ -522,7 +580,7 @@ export default function Message(props) {
                                             {/* Message Box */}
                                             <div className="message-box">
 
-                                                <h3 className="main-title">Groups</h3>
+                                                {/* <h3 className="main-title">Groups</h3>
                                                 <div className="message-header">
                                                     {
                                                         userGroups.length === 0 ? (
@@ -540,13 +598,13 @@ export default function Message(props) {
                                                             )
                                                         }))
                                                     }
-                                                </div>
+                                                </div> */}
 
-                                                <h3 className="main-title">Friends</h3>
+                                                <h3 className="main-title">Đoạn Chat</h3>
                                                 <div className="message-header">
                                                     {
                                                         userFriends.length === 0 ? (
-                                                            <p style={{ textAlign: 'center' }}>No firends</p>
+                                                            <p style={{ textAlign: 'center' }}>Bạn chưa có cuộc hội thoại nào</p>
                                                         ) : (userFriends.map((fr, index) => {
                                                             return (
                                                                 <div className={fr?.id === currentRoom?.id ? 'useravatar active' : 'useravatar'} onClick={() => setUpCurrentRoom(fr)}>
@@ -565,105 +623,126 @@ export default function Message(props) {
                                                 <div className="message-content">
                                                     <div className="chat-header">
                                                         {/* <div className="status online" /> */}
-                                                        <h6>{formatLastSeen(userPm?.lastSeen)}</h6>
-                                                        <div className="corss">
+                                                        {userMsgs.length > 0 ? (<h6>{formatLastSeen(userPm?.lastSeen)}</h6>) : (<></>)}
+                                                        {/* <div className="corss">
                                                             <span className="report"><i className="icofont-flag" /></span>
                                                             <span className="options"><i className="icofont-brand-flikr" /></span>
-                                                        </div>
+                                                        </div> */}
                                                     </div>
                                                     {/* message */}
                                                     <div className="chat-content">
-                                                        <div className="date">{formatLastSeen(currentRoom?.lastSeen, true)}</div>
-                                                        <ul className="chatting-area ">
-                                                            {
-                                                                userMsgs.length === 0 ? (
-                                                                    <p style={{ textAlign: 'center' }}>Let's say Hi!</p>
-                                                                ) : (userMsgs.map((msg, index) => {
-                                                                    const isLastMessage = index === userMsgs.length - 1;
-                                                                    return (
-                                                                        <li
-                                                                            key={index}
-                                                                            ref={isLastMessage ? lastChatRef : null}
-                                                                            style={{
-                                                                                display: 'inline-flex',
-                                                                                flexDirection: getUserId?.userId === msg?.userId ? 'row-reverse' : '',
-                                                                                marginBottom: 5
-                                                                            }}
-                                                                            className={getUserId?.userId === msg?.user?.userId ? 'me' : 'you'}>
-                                                                            {/* Message avatar */}
-                                                                            {
-                                                                                getUserId?.userId === msg?.userId ? (
-                                                                                    <figure style={{ display: 'flex', flexDirection: 'column-reverse' }}><img
-                                                                                        style={{ backgroundColor: 'white', width: 30, height: 30, objectFit: 'hidden', borderRadius: '100%' }}
-                                                                                        alt={'Avatar'} src={chatter?.image === 'none' ? "../images/default-avt.png" : chatter?.image} /></figure>
+                                                        {userMsgs.length > 0 ? (<div className="date">{formatLastSeen(currentRoom?.lastSeen, true)}</div>) : (<></>)}
+                                                        <div className="chatting-container">
+                                                            <ul className="chatting-area ">
+                                                                {
+                                                                    userMsgs.length === 0 ? noRoom ? (
+                                                                        <p style={{ textAlign: 'center' }}>Tips! Vào trang cá nhân và chọn "Gửi tin nhắn" để bắt đầu trò chuyện</p>
+                                                                    ) : (
+                                                                        <p style={{ textAlign: 'center' }}>Hãy gửi lời chào đến bạn mới!</p>
+                                                                    ) : (userMsgs.map((msg, index) => {
+                                                                        const isLastMessage = index === userMsgs.length - 1;
+                                                                        return (
+                                                                            <li
+                                                                                key={index}
+                                                                                ref={isLastMessage ? lastChatRef : null}
+                                                                                style={{
+                                                                                    display: 'inline-flex',
+                                                                                    flexDirection: getUserId?.userId === msg?.userId ? 'row-reverse' : '',
+                                                                                    marginBottom: 5
+                                                                                }}
+                                                                                className={getUserId?.userId === msg?.user?.userId ? 'me' : 'you'}>
+                                                                                {/* Message avatar */}
+                                                                                {
+                                                                                    getUserId?.userId === msg?.userId ? (
+                                                                                        <figure style={{ display: 'flex', flexDirection: 'column-reverse' }}><img
+                                                                                            style={{ backgroundColor: 'white', width: 30, height: 30, objectFit: 'hidden', borderRadius: '100%' }}
+                                                                                            alt={'Avatar'} src={chatter?.image === 'none' ? "../images/default-avt.png" : chatter?.image} /></figure>
 
-                                                                                ) : (
-                                                                                    <figure style={{ display: 'flex', flexDirection: 'column-reverse' }}><img
-                                                                                        style={{ backgroundColor: 'white', width: 30, height: 30, objectFit: 'hidden', borderRadius: '100%' }}
-                                                                                        alt={'Avatar'} src={currentRoom?.image === 'none' ? "../images/default-avt.png" : currentRoom?.image} /></figure>
-                                                                                )
-                                                                            }
-                                                                            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: getUserId?.userId === msg?.userId ? 'flex-end' : 'flex-start' }}>
-                                                                                <h5 style={{ fontSize: 11, marginBottom: '1px', marginLeft: '19px', marginRight: '19px' }} href='#' alt=''>{getUserId?.userId === msg?.userId ? '' : msg?.fullName ? msg?.fullName : msg?.username}</h5>
-                                                                                {msg.type === 'pmi' ? (
-                                                                                    <p style={{ display: 'inline-flex', marginBottom: '1', wordWrap: 'break-word', overflow: 'hidden' }}>
-                                                                                        <img src={getIconSource(msg.content)}></img>
-                                                                                    </p>
-                                                                                ) : (
-                                                                                    <p style={{ display: 'inline-flex', marginBottom: '1', wordWrap: 'break-word', overflow: 'hidden' }}>{msg.content}</p>
-                                                                                )}
-                                                                            </div>
-                                                                        </li>
-                                                                    )
-                                                                }))
-                                                            }
-                                                        </ul>
-                                                        <div className="message-text-container">
-                                                            {/* <div className="more-attachments">
+                                                                                    ) : (
+                                                                                        <figure style={{ display: 'flex', flexDirection: 'column-reverse' }}><img
+                                                                                            style={{ backgroundColor: 'white', width: 30, height: 30, objectFit: 'hidden', borderRadius: '100%' }}
+                                                                                            alt={'Avatar'} src={currentRoom?.image === 'none' ? "../images/default-avt.png" : currentRoom?.image} /></figure>
+                                                                                    )
+                                                                                }
+                                                                                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: getUserId?.userId === msg?.userId ? 'flex-end' : 'flex-start' }}>
+                                                                                    <h5 style={{ fontSize: 11, marginBottom: '1px', marginLeft: '19px', marginRight: '19px' }} href='#' alt=''>{getUserId?.userId === msg?.userId ? '' : msg?.fullName ? msg?.fullName : msg?.username}</h5>
+                                                                                    {
+                                                                                        msg.type === 'pmi' ? (
+                                                                                            //Icon
+                                                                                            <p style={{ display: 'inline-flex', marginBottom: '1', wordWrap: 'break-word', overflow: 'hidden' }}>
+                                                                                                <img src={getIconSource(msg.content)}></img>
+                                                                                            </p>
+                                                                                        ) : (
+                                                                                            //Text
+                                                                                            <p style={{ display: 'inline-flex', marginBottom: '1', wordWrap: 'break-word', overflow: 'hidden' }}>{msg.content}</p>
+                                                                                        )
+                                                                                    }
+                                                                                </div>
+                                                                            </li>
+                                                                        )
+                                                                    }))
+                                                                }
+                                                            </ul>
+                                                        </div>
+
+                                                        {noRoom ? (<></>) :
+                                                            (
+                                                                <div className="message-text-container">
+                                                                    {/* <div className="more-attachments">
                                                                 <i className="icofont-plus" />
                                                             </div> */}
-                                                            {/* <div className="attach-options">
+                                                                    {/* <div className="attach-options">
                                                                 <a href="#" title><i className="icofont-camera" /> Open Camera</a>
                                                                 <a href="#" title><i className="icofont-video-cam" /> Photo &amp; video Library</a>
                                                                 <a href="#" title><i className="icofont-paper-clip" /> Attach Document</a>
                                                                 <a href="#" title><i className="icofont-location-pin" /> Share Location</a>
                                                                 <a href="#" title><i className="icofont-contact-add" /> Share Contact</a>
                                                             </div> */}
-                                                            <form onSubmit={handleSend} >
-                                                                <span className="emojie" onClick={() => setShowIcon(!showIcon)} ><img src="../images/smiles/happy.png" alt /></span>
-                                                                <textarea
-                                                                    rows={1}
-                                                                    placeholder="Nhắn tin"
-                                                                    name="message"
-                                                                    style={{ width: '91%' }}
-                                                                    // style={{ width: '91%' }}
-                                                                    value={formData.message}
-                                                                    onChange={handleChange}
-                                                                    onKeyPress={handleKeyPress}
-                                                                />
-                                                                {userMsgs.length === 0 ? (
-                                                                    <div style={{ display: 'flex', justifyContent: 'center', alignSelf: 'center' }}>
-                                                                        <button type='submit' className="button primary circle" style={{ backgroundColor: '#8ab332', width: 120, right: '-28px' }} href="#" title>Say hi! 🖐️</button>
-                                                                    </div>
-                                                                ) : (
-                                                                    <button style={{ right: '-28px' }} title="send" type='submit'><i className="icofont-paper-plane" /></button>
-                                                                )}
-                                                                <div className={showIcon ? "smiles-bunch active" : "smiles-bunch"}>
-                                                                    <i><img onClick={() => sendIcon('1')} src="../images/smiles/angry-1.png" alt /></i>
-                                                                    <i><img onClick={() => sendIcon('2')} src="../images/smiles/angry.png" alt /></i>
-                                                                    <i><img onClick={() => sendIcon('3')} src="../images/smiles/bored-1.png" alt /></i>
-                                                                    <i><img onClick={() => sendIcon('4')} src="../images/smiles/bored-2.png" alt /></i>
-                                                                    <i><img onClick={() => sendIcon('5')} src="../images/smiles/bored.png" alt /></i>
-                                                                    <i><img onClick={() => sendIcon('6')} src="../images/smiles/confused-1.png" alt /></i>
-                                                                    <i><img onClick={() => sendIcon('7')} src="../images/smiles/confused.png" alt /></i>
-                                                                    <i><img onClick={() => sendIcon('8')} src="../images/smiles/crying-1.png" alt /></i>
-                                                                    <i><img onClick={() => sendIcon('9')} src="../images/smiles/crying.png" alt /></i>
-                                                                    <i><img onClick={() => sendIcon('10')} src="../images/smiles/tongue-out.png" alt /></i>
-                                                                    <i><img onClick={() => sendIcon('11')} src="../images/smiles/wink.png" alt /></i>
-                                                                    <i><img onClick={() => sendIcon('12')} src="../images/smiles/suspicious.png" alt /></i>
+                                                                    <form onSubmit={handleSend} >
+                                                                        <span className="emojie" onClick={() => setShowIcon(!showIcon)} ><img src="../images/smiles/happy.png" alt /></span>
+                                                                        <textarea
+                                                                            rows={1}
+                                                                            placeholder="Nhắn tin"
+                                                                            name="message"
+                                                                            style={{
+                                                                                width: '91%',
+                                                                                lineHeight: 'normal',
+                                                                                borderRadius: '0.5rem',
+                                                                                paddingTop: '25px',
+                                                                                paddingBottom: '5px',
+                                                                                overflow: 'inherit',
+                                                                                height: '40px'
+                                                                            }}
+                                                                            // style={{ width: '91%' }}
+                                                                            value={formData.message}
+                                                                            onChange={handleChange}
+                                                                            onKeyPress={handleKeyPress}
+                                                                        />
+                                                                        {userMsgs.length === 0 ? (
+                                                                            <div style={{ display: 'flex', justifyContent: 'center', alignSelf: 'center' }}>
+                                                                                <button type='submit' className="button primary circle" style={{ backgroundColor: '#8ab332', width: 140, right: '-28px' }} href="#" title>Xin Chào! 🖐️</button>
+                                                                            </div>
+                                                                        ) : (
+                                                                            <button style={{ right: '-28px' }} title="send" type='submit'><i className="icofont-paper-plane" /></button>
+                                                                        )}
+                                                                        <div className={showIcon ? "smiles-bunch active" : "smiles-bunch"}>
+                                                                            <i><img onClick={() => sendIcon('1')} src="../images/smiles/angry-1.png" alt /></i>
+                                                                            <i><img onClick={() => sendIcon('2')} src="../images/smiles/angry.png" alt /></i>
+                                                                            <i><img onClick={() => sendIcon('3')} src="../images/smiles/bored-1.png" alt /></i>
+                                                                            <i><img onClick={() => sendIcon('4')} src="../images/smiles/bored-2.png" alt /></i>
+                                                                            <i><img onClick={() => sendIcon('5')} src="../images/smiles/bored.png" alt /></i>
+                                                                            <i><img onClick={() => sendIcon('6')} src="../images/smiles/confused-1.png" alt /></i>
+                                                                            <i><img onClick={() => sendIcon('7')} src="../images/smiles/confused.png" alt /></i>
+                                                                            <i><img onClick={() => sendIcon('8')} src="../images/smiles/crying-1.png" alt /></i>
+                                                                            <i><img onClick={() => sendIcon('9')} src="../images/smiles/crying.png" alt /></i>
+                                                                            <i><img onClick={() => sendIcon('10')} src="../images/smiles/tongue-out.png" alt /></i>
+                                                                            <i><img onClick={() => sendIcon('11')} src="../images/smiles/wink.png" alt /></i>
+                                                                            <i><img onClick={() => sendIcon('12')} src="../images/smiles/suspicious.png" alt /></i>
+                                                                        </div>
+                                                                    </form>
                                                                 </div>
-                                                            </form>
-                                                        </div>
+                                                            )
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
@@ -674,7 +753,7 @@ export default function Message(props) {
                                             <div className="chating-head" style={{ backgroundColor: '#ddebf3', marginBottom: 10 }}>
                                                 <div className="s-left">
                                                     <h5>{currentRoom?.roomName}</h5>
-                                                    <p>{currentRoom?.type === 'gr' ? 'Nhóm' : 'Bạn bè'}</p>
+                                                    <p>{currentRoom?.type === 'gr' ? 'Nhóm' : 'Người tình nguyện'}</p>
                                                 </div>
                                             </div>
                                             <div className="short-intro">
