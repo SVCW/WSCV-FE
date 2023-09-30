@@ -457,23 +457,28 @@ export default function Message(props) {
                     if (change.type === "removed") {
                         console.log("Removed message: ", change.doc.data());
                     }
-                })
-                const data = snapshot.docs.map(doc => ({
-                    ...doc.data(),
-                    id: doc.id
-                })).filter(message => message.roomId === currentRoom?.id);
-                // message image process
-                // if (currentRoom.type === 'gr') {
-                const members = currentRoom.members;
-                if (members instanceof Array && members.length > 0) {
-                    data.map(message => {
-                        message.user = members.find(mem => mem.userId === message.userId);
-                    })
-                }
-                // }
 
-                console.log('Chat room message:', data);
-                setUserMsgs(data);
+                    const data = snapshot.docs.map(doc => ({
+                        ...doc.data(),
+                        id: doc.id
+                    })).filter(message => message.roomId === currentRoom?.id);
+                    // message image process
+                    // if (currentRoom.type === 'gr') {
+                    const members = currentRoom.members;
+                    if (members instanceof Array && members.length > 0) {
+                        data.map(message => {
+                            message.user = members.find(mem => mem.userId === message.userId);
+                        })
+                    }
+                    // }
+
+
+                    if (data.length !== userMsgs.length) {
+                        // console.log('Chat room message:', data);
+                        setUserMsgs(data);
+                    }
+                })
+
             });
     }, [currentRoom])
 
