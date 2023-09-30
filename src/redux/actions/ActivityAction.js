@@ -3,6 +3,7 @@ import { http } from "../../utils/reponse";
 import { GetFanpageByIDAction } from "./FanpageAction";
 import { GetProfile1ByIdAction, GetProfileByIdAction } from "./ProfileAction";
 import { SendEmail } from "../../utils/emailService";
+import { history } from "../../App";
 export const GetListActivityAction = () => {
   return async (dispatch) => {
     try {
@@ -223,7 +224,7 @@ export const CheckinActivityAction = (value, props) => {
         icon: "success",
         title: `Quét mã thành công.`,
       });
-      props.history.push('/success')
+     history.push('/success')
     } catch (error) {
       console.log(error?.response?.data?.message);
       const Toast = Swal.mixin({
@@ -242,7 +243,7 @@ export const CheckinActivityAction = (value, props) => {
         icon: "warning",
         title: `${error?.response?.data?.message}`,
       });
-      props.history.push('/error')
+      history.push('/error')
     }
   };
 };
