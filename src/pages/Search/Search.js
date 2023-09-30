@@ -87,7 +87,7 @@ export default function Search(props) {
                   </div>
                 </div>
                 <div style={{ width: "75%", marginLeft: "20px" }}>
-                  <h5><NavLink to={`/profile/${item.userId}`}>{item.fullName}</NavLink></h5>
+                  <h5><NavLink to={`/profile1/${item.userId}`}>{item.fullName}</NavLink></h5>
                   <p>{item.username}</p>
                 </div>
               </div>

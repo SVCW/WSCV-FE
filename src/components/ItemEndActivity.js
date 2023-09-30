@@ -936,7 +936,7 @@ export default function ItemEndActivity(props) {
                 {endDate.isBefore(currentDate) ? (
                   <Fragment></Fragment>
                 ) : (
-                  <div>
+                  <>
                     {ItemActivity.process?.map((pro, index) => {
                       if (
                         moment(pro.startDate, "YYYY-MM-DD hh:mm A").isBefore(
@@ -986,13 +986,13 @@ export default function ItemEndActivity(props) {
                         }
                       }
                     })}
-                  </div>
+                  </>
                 )}
 
                 {endDate.isBefore(currentDate) ? (
                   <Fragment></Fragment>
                 ) : (
-                  <div>
+                  <>
                     {ItemActivity.process?.map((pro, index) => {
                       if (
                         moment(pro.startDate, "YYYY-MM-DD hh:mm A").isBefore(
@@ -1017,7 +1017,7 @@ export default function ItemEndActivity(props) {
                         }
                       }
                     })}
-                  </div>
+                  </>
                 )}
                 {ItemActivity.process.length !== 0 ? (
                   <NavLink

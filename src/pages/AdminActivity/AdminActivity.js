@@ -938,7 +938,7 @@ export default function AdminActivity() {
                       {moment(activity?.endDate).format("DD/MM/YYYY")}
                     </p>
                       <p style={{ fontWeight: 800,fontSize: "18px", }}>
-                     Đối tượng hổ trợ: {activity?.location}
+                     Đối tượng hỗ trợ: {activity?.location}
                     </p>
                     <hr />
                     {/* <p style={{ fontWeight: 800 }}>Hoạt động :</p> */}
