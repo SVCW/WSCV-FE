@@ -31,7 +31,7 @@ export default function Profile1(props) {
   const dispatch = useDispatch();
   const [reloadPage, setReloadPage] = useState(false);
   const { userID } = useSelector((root) => root.LoginReducer);
-  const { getUserId1 ,arrActivityUser1} = useSelector((root) => root.ProfileReducer);
+  const { getUserId1, arrActivityUser1 } = useSelector((root) => root.ProfileReducer);
 
   const { arrEndActivityByUserID } = useSelector(
     (root) => root.EndActivityReducer
@@ -45,6 +45,12 @@ export default function Profile1(props) {
   const handleClickCreate = () => {
     setIsOpen((prevIsOpen) => !prevIsOpen);
   };
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth', // Use 'auto' if you don't want smooth scrolling
+    });
+  }
   const { isLoadingM } = useSelector((root) => root.LoadingReducer);
   const [loading, setLoading] = useState(isLoadingM);
   useEffect(() => {
@@ -62,6 +68,7 @@ export default function Profile1(props) {
     //       type: "HIDE_LOADING",
     //     };
     //     dispatch(loading1);
+    scrollToTop()
   }, []);
   return (
     <div>

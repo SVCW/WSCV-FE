@@ -72,7 +72,10 @@ export default function Message(props) {
     }
 
     function formatName(inputString) {
-        const words = inputString.split(' '); // Split the input string into an array of words
+        if (!inputString) {
+            return;
+        }
+        const words = inputString?.split(' '); // Split the input string into an array of words
         if (words.length >= 2) {
             // Check if there are at least two words
             const lastTwoWords = words.slice(-2); // Get the last two words
