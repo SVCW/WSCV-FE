@@ -207,9 +207,41 @@ export const CheckinActivityAction = (value, props) => {
         `/QR/check-in?userId=${value.userId}&activityId=${value.activityId}`
       );
       console.log(result);
-     props.history.push('/success')
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
+      Toast.fire({
+        icon: "success",
+        title: `Quét mã thành công.`,
+      });
+      props.history.push('/success')
     } catch (error) {
       console.log(error?.response?.data?.message);
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
+      Toast.fire({
+        icon: "warning",
+        title: `${error?.response?.data?.message}`,
+      });
       props.history.push('/error')
     }
   };
