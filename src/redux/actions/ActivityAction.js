@@ -4,6 +4,7 @@ import { GetFanpageByIDAction } from "./FanpageAction";
 import { GetProfile1ByIdAction, GetProfileByIdAction } from "./ProfileAction";
 import { SendEmail } from "../../utils/emailService";
 import { history } from "../../App";
+
 export const GetListActivityAction = () => {
   return async (dispatch) => {
     try {
@@ -201,49 +202,22 @@ export const PostLikeAction = (value) => {
   };
 };
 
-export const CheckinActivityAction = (value, props) => {
+export const CheckinActivityAction = (value,props) => {
   return async (dispatch) => {
     try {
       let result = await http.post(
         `/QR/check-in?userId=${value.userId}&activityId=${value.activityId}`
       );
       console.log(result);
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        },
-      });
-
-      Toast.fire({
-        icon: "success",
-        title: `Quét mã thành công.`,
-      });
-     history.push('/success')
+ 
+      props.history.push('/success');
+      window.location.reload();
     } catch (error) {
       console.log(error?.response?.data?.message);
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        },
-      });
-
-      Toast.fire({
-        icon: "warning",
-        title: `${error?.response?.data?.message}`,
-      });
-      history.push('/error')
+      
+      localStorage.setItem("errortitle", error?.response?.data?.message)
+      props.history.push('/error')
+      window.location.reload();
     }
   };
 };

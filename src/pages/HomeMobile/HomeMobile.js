@@ -46,7 +46,7 @@ export default function QRScanner (props) {
             userId: localStorage.getItem('userIDMobile'),
             activityId: code.data,
           }
-          const action = CheckinActivityAction(checkin,props);
+          const action = CheckinActivityAction(checkin, props);
           dispatch(action)
         }
       }
@@ -120,7 +120,7 @@ export default function QRScanner (props) {
   return (
     <div>
       <video ref={videoRef} autoPlay muted playsInline></video>
-      <div>Ket qua : {data}</div>
+  
     </div>
   );
 }
