@@ -416,7 +416,7 @@ export default function Header(props) {
                 {visibleComments?.map((item, index) => {
                   return (
                     <NavLink
-                      to={`/detailactivity/${item?.activity?.activityId}`}
+                      to={item.activityId  ? `/profile/${localStorage.getItem('userID')}`: `/detailactivity/${item?.activity?.activityId}` }
                     >
                       <li style={{
                         background: '#d6eefe',

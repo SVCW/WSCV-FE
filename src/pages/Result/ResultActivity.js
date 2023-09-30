@@ -15,7 +15,7 @@ export default function ResultActivity (props) {
   const { popupStyle1, handleClick1, isOpen1, idActivity } = props;
   const { activityId } = useSelector((root) => root.ActivityReducer);
   const { arrEndActivityID } = useSelector((root) => root.EndActivityReducer);
-
+console.log(arrEndActivityID)
   const [isFolowJoin, setIsFolowJoin] = useState(false);
   const [listFolowJoin, setFolowJoin] = useState([]);
   const [listJoinFollow, setJoinFollow] = useState([]);
@@ -205,7 +205,7 @@ export default function ResultActivity (props) {
                           data-toggle="tab"
                           onClick={() => {
                             handleClickDonate();
-                            setIsDonate(arrEndActivityID?.activity?.donation);
+                            setIsListDonate(arrEndActivityID?.activity?.donation?.filter(item =>item.status ==="success"));
                           }}
                         >
                           Người ủng hộ
@@ -317,7 +317,7 @@ export default function ResultActivity (props) {
                               rows={10}
                               rowsPerPageOptions={[5, 10, 25]}
                               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                              currentPageReportTemplate="Đang hiển thị {first} đến {last} trong tổng số {totalRecords} người tham gia"
+                              currentPageReportTemplate="Đang hiển thị {first} đến {last} trong tổng số {totalRecords} người ủng hộ"
                               globalFilter={globalFilter1}
                               header={header1}
                             >
@@ -341,7 +341,7 @@ export default function ResultActivity (props) {
                                     "DD/MM/YYYY hh:mm A"
                                   )
                                 }
-                                header="Thời gian theo dõi"
+                                header="Thời gian ủng hộ"
                                 sortable
                                 style={{ minWidth: "12rem" }}
                               ></Column>

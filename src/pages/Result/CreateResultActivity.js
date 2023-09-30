@@ -114,6 +114,8 @@ export default function CreateResultActivity (props) {
     if (idActivity) {
       formik8.setFieldValue("activityId", idActivity);
     }
+
+    formik8.setFieldValue('media', [])
   }, [idActivity]);
   return (
     <div>
