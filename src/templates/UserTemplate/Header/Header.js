@@ -54,26 +54,26 @@ export default function Header(props) {
   //   title: `Bỏ theo dõi chiến dịch ${title} thành công `,
   // });
 
-  useEffect(() => {
-    const differenceArray = arrNoti.filter(item1 => {
-      return !lastArray.some(item2 => item2.notificationId === item1.notificationId);
-    });
+  // useEffect(() => {
+  //   const differenceArray = arrNoti.filter(item1 => {
+  //     return !lastArray.some(item2 => item2.notificationId === item1.notificationId);
+  //   });
 
-    if (differenceArray instanceof Array && differenceArray.length > 0 && lastArray.length > 0) {
-      differenceArray.forEach((noti) => {
-        Toast.fire({
-          icon: "info",
-          title: `${noti?.title}`,
-        });
-      });
+  //   if (differenceArray instanceof Array && differenceArray.length > 0 && lastArray.length > 0) {
+  //     differenceArray.forEach((noti) => {
+  //       Toast.fire({
+  //         icon: "info",
+  //         title: `${noti?.title}`,
+  //       });
+  //     });
 
-    }
+  //   }
 
-    console.log('diff Array: ', differenceArray);
-    console.log('lastArray: ', lastArray);
-    console.log('diff arrNoti: ', arrNoti);
-    setLastArray(arrNoti)
-  }, [arrNoti]);
+  //   console.log('diff Array: ', differenceArray);
+  //   console.log('lastArray: ', lastArray);
+  //   console.log('diff arrNoti: ', arrNoti);
+  //   setLastArray(arrNoti)
+  // }, [arrNoti]);
 
 
 
