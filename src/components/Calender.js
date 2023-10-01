@@ -161,7 +161,8 @@ const Calender = (props) => {
   if (showPopup) {
     document.body.style.overflow = 'hidden';
   } else {
-    document.body.style.overflow = 'unset';
+    document.body.style.overflowX = 'hidden';
+    document.body.style.overflowY = 'auto';
 
   }
 
