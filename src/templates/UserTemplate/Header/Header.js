@@ -98,7 +98,7 @@ export default function Header(props) {
       // Gọi hàm sau 2 giây
       const intervalId = setInterval(() => {
         yourFunction();
-      }, 10000);
+      }, 2000);
 
       // Xóa interval khi component unmount hoặc khi không còn cần thiết
       return () => clearInterval(intervalId);
@@ -266,7 +266,6 @@ export default function Header(props) {
                   </svg>
                 </i>
               </NavLink>
-              <span />
             </li>
             <li
               onClick={() => {
@@ -298,7 +297,6 @@ export default function Header(props) {
                   </svg>
                 </i>
               </a>
-              <span />
             </li>
 
 
