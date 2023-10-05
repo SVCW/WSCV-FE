@@ -1138,7 +1138,7 @@ export default function CreateActivity() {
                               <div style={{ height: "200px", width: "100%" }}>
                                 <GoogleMapReact
                                   bootstrapURLKeys={{
-                                    key: "AIzaSyCqUW1koIvv-Wjs3LnuAC_dn6RuewXDmOs",
+                                    key: "",
                                   }}
                                   defaultCenter={coords}
                                   center={coords}
